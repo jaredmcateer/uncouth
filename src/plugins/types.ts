@@ -13,6 +13,7 @@ export enum ReferenceKind {
   VARIABLE,
   CONTEXT,
   NONE,
+  TEMPLATE_REF,
 }
 
 export type ImportModule = {

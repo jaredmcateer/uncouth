@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`testVueFile compatible 1`] = `
-"import {
+"import MyComponent from 'my-component.vue'
+import {
   computed,
   reactive,
   toRefs,
@@ -66,6 +67,18 @@ export default defineComponent({
 
     const bazi = inject<string>(symbol)
 
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv = ref<
+      HTMLDivElement
+    >(null)
+
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(
+      null
+    )
+
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent = ref<
+      MyComponent
+    >(null)
+
     /**
      * My msg
      */
@@ -77,6 +90,15 @@ export default defineComponent({
     onUnmounted(() => {
       console.log('destroyed')
     })
+
+    const refAccess = () => {
+      const foo = { myDiv: true }
+
+      foo.myDiv = false // should not transform
+      myDiv.value!.focus()
+      mySpan.value!.innerText = 'foo'
+      myComponent.value!.vm.doSomething()
+    }
 
     /**
      * My greeting
@@ -94,9 +116,13 @@ export default defineComponent({
       bari,
       optional,
       bazi,
+      myDiv,
+      mySpan,
+      myComponent,
       msg,
       onBeforeUnmount,
       onUnmounted,
+      refAccess,
       hello
     }
   }
@@ -105,7 +131,8 @@ export default defineComponent({
 `;
 
 exports[`testVueFile no compatible 1`] = `
-"import {
+"import MyComponent from 'my-component.vue'
+import {
   computed,
   reactive,
   toRefs,
@@ -169,6 +196,18 @@ export default {
 
     const bazi = inject<string>(symbol)
 
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv = ref<
+      HTMLDivElement
+    >(null)
+
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(
+      null
+    )
+
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent = ref<
+      MyComponent
+    >(null)
+
     /**
      * My msg
      */
@@ -180,6 +219,15 @@ export default {
     onUnmounted(() => {
       console.log('destroyed')
     })
+
+    const refAccess = () => {
+      const foo = { myDiv: true }
+
+      foo.myDiv = false // should not transform
+      myDiv.value!.focus()
+      mySpan.value!.innerText = 'foo'
+      myComponent.value!.vm.doSomething()
+    }
 
     /**
      * My greeting
@@ -197,9 +245,13 @@ export default {
       bari,
       optional,
       bazi,
+      myDiv,
+      mySpan,
+      myComponent,
       msg,
       onBeforeUnmount,
       onUnmounted,
+      refAccess,
       hello
     }
   }

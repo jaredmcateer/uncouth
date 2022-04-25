@@ -1,8 +1,8 @@
 import { ASTTransform, ASTResult, ReferenceKind, ASTResultKind } from './types'
-import type ts from 'typescript'
+import ts from 'typescript'
 import { addTodoComment } from '../utils'
 
-export const removeThisAndSort: ASTTransform = (astResults, options) => {
+export const changeContextAndSort: ASTTransform = (astResults, options) => {
   const tsModule = options.typescript
   const getReferences = (reference: ReferenceKind) => astResults
     .filter((el) => el.reference === reference)
@@ -10,7 +10,8 @@ export const removeThisAndSort: ASTTransform = (astResults, options) => {
     .reduce((array, el) => array.concat(el), [])
 
   const refVariables = getReferences(ReferenceKind.VARIABLE_VALUE)
-  const domeRefVariables = getReferences(ReferenceKind.VARIABLE_NON_NULL_VALUE)
+  const domRefVariables = getReferences(ReferenceKind.VARIABLE_NON_NULL_VALUE)
+  const templateRefVariables = getReferences(ReferenceKind.TEMPLATE_REF)
   const propVariables = getReferences(ReferenceKind.PROPS)
   const variables = getReferences(ReferenceKind.VARIABLE)
 
@@ -31,17 +32,18 @@ export const removeThisAndSort: ASTTransform = (astResults, options) => {
 
   const transformer: () => ts.TransformerFactory<ts.Node> = () => {
     return (context) => {
-      const removeThisVisitor: ts.Visitor = (node) => {
+      const changeContext: ts.Visitor = (node) => {
         if (tsModule.isPropertyAccessExpression(node)) {
+          const propertyName = node.name.text
+
           if (node.expression.kind === tsModule.SyntaxKind.ThisKeyword) {
-            const propertyName = node.name.getText()
             if (refVariables.includes(propertyName)) {
               dependents.push(propertyName)
               return tsModule.createPropertyAccess(
                 tsModule.createIdentifier(propertyName),
                 tsModule.createIdentifier('value')
               )
-            } else if (domeRefVariables.includes(propertyName)) {
+            } else if (domRefVariables.includes(propertyName)) {
               dependents.push(propertyName)
               return tsModule.createNonNullExpression(
                 tsModule.createPropertyAccess(
@@ -80,13 +82,28 @@ export const removeThisAndSort: ASTTransform = (astResults, options) => {
                 true
               )
             }
+          } else if (templateRefVariables.includes(propertyName)) {
+            const refPropAccess = node
+              .getChildren()
+              .find((child): child is ts.PropertyAccessExpression => {
+                return tsModule.isPropertyAccessExpression(child)
+              })
+
+            if (refPropAccess?.name.getText() === '$refs') {
+              return tsModule.createNonNullExpression(
+                tsModule.createPropertyAccess(
+                  tsModule.createIdentifier(propertyName),
+                  tsModule.createIdentifier('value')
+                )
+              )
+            }
           }
-          return tsModule.visitEachChild(node, removeThisVisitor, context)
+          return tsModule.visitEachChild(node, changeContext, context)
         }
-        return tsModule.visitEachChild(node, removeThisVisitor, context)
+        return tsModule.visitEachChild(node, changeContext, context)
       }
 
-      return (node) => tsModule.visitNode(node, removeThisVisitor)
+      return (node) => tsModule.visitNode(node, changeContext)
     }
   }
 
@@ -136,3 +153,6 @@ export const removeThisAndSort: ASTTransform = (astResults, options) => {
 
   return result
 }
+
+/** @deprecated renamed to changeContextAndSort to better reflect what it does */
+export const removeThisAndSort = changeContextAndSort
