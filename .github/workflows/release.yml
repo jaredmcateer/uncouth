@@ -50,7 +50,7 @@ jobs:
         env:
           CI: true
       - name: codecov
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '10.x'
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 16
         run: |
           yarn codecov --token="${{ secrets.CODECOV_TOKEN }}"
 
