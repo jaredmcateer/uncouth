@@ -51,6 +51,18 @@ export default defineComponent({
 
     const anotherComponent = ref<HTMLElement>(null)
 
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv = ref<
+      HTMLDivElement
+    >(null)
+
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(
+      null
+    )
+
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent = ref<
+      MyComponent
+    >(null)
+
     /**
      * My msg
      */
@@ -69,6 +81,15 @@ export default defineComponent({
 
     const click = (c: string) => {
       context.emit('click', c)
+    }
+
+    const refAccess = () => {
+      const foo = { myDiv: true }
+
+      foo.myDiv = false // should not transform
+      myDiv.value!.focus()
+      mySpan.value!.innerText = 'foo'
+      myComponent.value!.vm.doSomething()
     }
 
     const value = computed({
@@ -113,11 +134,15 @@ export default defineComponent({
       count,
       a,
       anotherComponent,
+      myDiv,
+      mySpan,
+      myComponent,
       msg,
       onMsgChanged,
       onBeforeUnmount,
       onUnmounted,
       click,
+      refAccess,
       value,
       checked,
       onMounted,
@@ -182,6 +207,18 @@ export default defineComponent({
 
     const anotherComponent = ref<HTMLElement>(null)
 
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv = ref<
+      HTMLDivElement
+    >(null)
+
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(
+      null
+    )
+
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent = ref<
+      MyComponent
+    >(null)
+
     /**
      * My msg
      */
@@ -200,6 +237,15 @@ export default defineComponent({
 
     const click = (c: string) => {
       context.emit('click', c)
+    }
+
+    const refAccess = () => {
+      const foo = { myDiv: true }
+
+      foo.myDiv = false // should not transform
+      myDiv.value!.focus()
+      mySpan.value!.innerText = 'foo'
+      myComponent.value!.vm.doSomething()
     }
 
     const value = computed({
@@ -244,11 +290,15 @@ export default defineComponent({
       count,
       a,
       anotherComponent,
+      myDiv,
+      mySpan,
+      myComponent,
       msg,
       onMsgChanged,
       onBeforeUnmount,
       onUnmounted,
       click,
+      refAccess,
       value,
       checked,
       onMounted,
@@ -311,6 +361,18 @@ export default {
 
     const anotherComponent = ref<HTMLElement>(null)
 
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv = ref<
+      HTMLDivElement
+    >(null)
+
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(
+      null
+    )
+
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent = ref<
+      MyComponent
+    >(null)
+
     /**
      * My msg
      */
@@ -329,6 +391,15 @@ export default {
 
     const click = (c: string) => {
       context.emit('click', c)
+    }
+
+    const refAccess = () => {
+      const foo = { myDiv: true }
+
+      foo.myDiv = false // should not transform
+      myDiv.value!.focus()
+      mySpan.value!.innerText = 'foo'
+      myComponent.value!.vm.doSomething()
     }
 
     const value = computed({
@@ -373,11 +444,15 @@ export default {
       count,
       a,
       anotherComponent,
+      myDiv,
+      mySpan,
+      myComponent,
       msg,
       onMsgChanged,
       onBeforeUnmount,
       onUnmounted,
       click,
+      refAccess,
       value,
       checked,
       onMounted,

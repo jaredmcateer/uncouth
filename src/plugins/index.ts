@@ -16,10 +16,11 @@ import { convertIntervalHook } from './vue-class-component/IntervalHook'
 import { convertWatch } from './vue-property-decorator/Watch'
 import { convertEmitMethod } from './vue-property-decorator/Emit'
 import { convertMethod } from './vue-class-component/Method'
-import { removeThisAndSort } from './removeThisAndSort'
+import { changeContextAndSort } from './changeContextAndSort'
 import { convertRender } from './vue-class-component/Render'
 import { convertInject } from './vue-property-decorator/Inject'
 import { convertProvide } from './vue-property-decorator/Provide'
+import { convertTemplateRef } from './vue-class-component/TemplateRef'
 
 export function getDefaultPlugins (tsModule: typeof ts): ASTConvertPlugins {
   return {
@@ -45,7 +46,8 @@ export function getDefaultPlugins (tsModule: typeof ts): ASTConvertPlugins {
       convertDomRef,
       convertProvide,
       convertInject,
-      convertData
+      convertData,
+      convertTemplateRef
     ],
     [tsModule.SyntaxKind.GetAccessor]: [
       convertGetter
@@ -64,7 +66,7 @@ export function getDefaultPlugins (tsModule: typeof ts): ASTConvertPlugins {
       mergeName,
       mergeProps,
       mergeComputed,
-      removeThisAndSort
+      changeContextAndSort
     ]
   }
 }

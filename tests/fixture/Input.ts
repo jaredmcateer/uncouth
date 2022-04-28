@@ -24,6 +24,12 @@ export default class BasicPropertyClass extends Vue {
    */
   @Prop({ type: Number, default: false }) foo!: number
 
+  $refs!: {
+    myDiv: HTMLDivElement
+    mySpan
+    myComponent: MyComponent
+  }
+
   /**
    * My msg
    */
@@ -81,6 +87,14 @@ export default class BasicPropertyClass extends Vue {
     } else {
       return this.foo
     }
+  }
+
+  refAccess() {
+    const foo = {myDiv: true};
+    foo.myDiv = false; // should not transform
+    this.$refs.myDiv.focus();
+    this.$refs.mySpan.innerText = 'foo'
+    this.$refs.myComponent.vm.doSomething()
   }
 
   /**

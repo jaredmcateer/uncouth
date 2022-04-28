@@ -7,6 +7,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Prop, Component, Ref, Model, Provide, Inject } from 'vue-property-decorator'
+import MyComponent from 'my-component.vue'
 
 const symbol = Symbol('baz')
 
@@ -39,6 +40,12 @@ export default class BasicPropertyClass extends Vue {
   @Inject({ from: 'optional', default: 'default' }) readonly optional!: string
   @Inject(symbol) readonly bazi!: string
 
+  $refs!: {
+    myDiv: HTMLDivElement
+    mySpan
+    myComponent: MyComponent
+  }
+
   /**
    * My msg
    */
@@ -64,6 +71,14 @@ export default class BasicPropertyClass extends Vue {
 
   destroyed() {
     console.log('destroyed')
+  }
+
+  refAccess() {
+    const foo = {myDiv: true};
+    foo.myDiv = false; // should not transform
+    this.$refs.myDiv.focus();
+    this.$refs.mySpan.innerText = 'foo'
+    this.$refs.myComponent.vm.doSomething()
   }
 }
 </script>
