@@ -67,17 +67,14 @@ export default defineComponent({
 
     const bazi = inject<string>(symbol)
 
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv = ref<
-      HTMLDivElement
-    >(null)
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
+      ref<HTMLDivElement>(null)
 
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(
-      null
-    )
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
+      ref(null)
 
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent = ref<
-      MyComponent
-    >(null)
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent =
+      ref<MyComponent>(null)
 
     /**
      * My msg
@@ -196,17 +193,14 @@ export default {
 
     const bazi = inject<string>(symbol)
 
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv = ref<
-      HTMLDivElement
-    >(null)
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
+      ref<HTMLDivElement>(null)
 
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(
-      null
-    )
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
+      ref(null)
 
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent = ref<
-      MyComponent
-    >(null)
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent =
+      ref<MyComponent>(null)
 
     /**
      * My msg

@@ -10,7 +10,7 @@ describe('testTSFile', () => {
   const filePath = 'fixture/Input.ts'
 
   it('compatible', () => {
-    const { file, result } = convertFile(filePath, __dirname, 'config/.compatible.vc2c.js')
+    const { file, result } = convertFile(filePath, __dirname, 'config/.compatible.uncouth.js')
     expect(file.fsPath.includes(path.basename(filePath))).toBeTruthy()
     expect(path.isAbsolute(file.fsPath)).toBeTruthy()
     expect(file.kind).toBe(FileKind.TS)
@@ -20,7 +20,7 @@ describe('testTSFile', () => {
   })
 
   it('no compatible', () => {
-    const { file, result } = convertFile(filePath, __dirname, 'config/.nocompatible.vc2c.js')
+    const { file, result } = convertFile(filePath, __dirname, 'config/.nocompatible.uncouth.js')
     expect(file.fsPath.includes(path.basename(filePath))).toBeTruthy()
     expect(path.isAbsolute(file.fsPath)).toBeTruthy()
     expect(file.kind).toBe(FileKind.TS)
@@ -31,7 +31,7 @@ describe('testTSFile', () => {
 
   it('compatible and ts config file', async (done) => {
     jest.setTimeout(10000)
-    const { stdout, stderr } = await execAsync(`node ${path.resolve(__dirname, '../bin/vc2c')} single -v -r ${__dirname} -c config/.compatible.vc2c.ts ${filePath}`)
+    const { stdout, stderr } = await execAsync(`node ${path.resolve(__dirname, '../bin/uncouth')} single -v -r ${__dirname} -c config/.compatible.uncouth.ts ${filePath}`)
 
     expect(stdout).toMatchSnapshot('stdout')
     expect(stderr).toMatchSnapshot('stderr')

@@ -1,5 +1,5 @@
 import type ts from 'typescript'
-import { Vc2cOptions } from '../options'
+import { UncouthOptions } from '../options'
 import { ASTConvertPlugins, ASTResult, ASTConverter, ASTResultKind } from './types'
 import { copySyntheticComments, addTodoComment, convertNodeToASTResult } from '../utils'
 import { log } from '../debug'
@@ -83,7 +83,7 @@ export function getDecoratorArgumentExpr (tsModule: typeof ts, node: ts.Node): t
 
 export function getASTResults (
   node: ts.ClassDeclaration,
-  options: Vc2cOptions,
+  options: UncouthOptions,
   program: ts.Program
 ): ASTResult<ts.Node>[] {
   const tsModule = options.typescript
@@ -133,7 +133,7 @@ export function getASTResults (
   return astResults
 }
 
-export function convertASTResultToSetupFn (astResults: ASTResult<ts.Node>[], options: Vc2cOptions): ts.MethodDeclaration {
+export function convertASTResultToSetupFn (astResults: ASTResult<ts.Node>[], options: UncouthOptions): ts.MethodDeclaration {
   const tsModule = options.typescript
 
   const returnStatement = addTodoComment(
@@ -194,7 +194,7 @@ export function convertASTResultToSetupFn (astResults: ASTResult<ts.Node>[], opt
   )
 }
 
-export function convertASTResultToImport (astResults: ASTResult<ts.Node>[], options: Vc2cOptions): ts.ImportDeclaration[] {
+export function convertASTResultToImport (astResults: ASTResult<ts.Node>[], options: UncouthOptions): ts.ImportDeclaration[] {
   interface Clause { named: Set<string>, default?: string }
 
   const tsModule = options.typescript
@@ -241,7 +241,7 @@ export function convertASTResultToImport (astResults: ASTResult<ts.Node>[], opti
 
 export function runPlugins (
   node: ts.ClassDeclaration,
-  options: Vc2cOptions,
+  options: UncouthOptions,
   program: ts.Program
 ): ts.Statement[] {
   const tsModule = options.typescript

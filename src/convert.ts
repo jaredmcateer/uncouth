@@ -1,7 +1,7 @@
 import type ts from 'typescript'
 import { getDecoratorNames, getDefaultExportNode } from './utils'
 import { runPlugins } from './plugins'
-import { Vc2cOptions } from './options'
+import { UncouthOptions } from './options'
 import { log } from './debug'
 
 const vueClassModules = [
@@ -9,7 +9,7 @@ const vueClassModules = [
   'vue-property-decorator'
 ]
 
-export function convertAST (sourceFile: ts.SourceFile, options: Vc2cOptions, program: ts.Program): string {
+export function convertAST (sourceFile: ts.SourceFile, options: UncouthOptions, program: ts.Program): string {
   const tsModule = options.typescript
 
   log('check vue class library')

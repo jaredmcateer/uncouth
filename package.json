@@ -1,15 +1,20 @@
 {
-  "name": "vc2c",
+  "name": "@jaredmcateer/uncouth",
   "version": "2.0.1",
-  "author": "<yoyo930021>yoyo930021@gmail.com",
+  "author": "Jared McAteer <jared.mcateer+npm@gmail.com>",
+  "contributors": [
+    {
+      "name": "yoyo930021 <yoyo930021@gmail.com> (https://github.com/yoyo930021/vc2c)"
+    }
+  ],
   "license": "MIT",
-  "main": "dist/lib/index.js",
-  "typings": "dist/types/index.d.ts",
+  "main": "dist/lib/src/index.js",
+  "typings": "dist/types/src/index.d.ts",
   "bin": {
-    "vc2c": "./bin/vc2c"
+    "uncouth": "./bin/uncouth"
   },
   "engines": {
-    "node": ">=10.18"
+    "node": ">=14"
   },
   "files": [
     "bin",
@@ -58,6 +63,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yoyo930021/vc2c.git"
+    "url": "https://github.com/jaredmcateer/uncouth.git"
   }
 }

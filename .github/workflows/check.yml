@@ -12,11 +12,12 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js 10.x
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v2
+      - name: Use Node.js 16
+        uses: actions/setup-node@v2
         with:
-          node-version: 10.x
+          node-version: 16
+          cache: yarn
       - name: Run lint
         run: |
           yarn install --frozen-lockfile
@@ -27,7 +28,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [14, 16, 18]
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
@@ -36,6 +37,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+          cache: yarn
       - name: Run test
         run: |
           yarn install --frozen-lockfile
@@ -43,6 +45,6 @@ jobs:
         env:
           CI: true
       - name: codecov
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '10.x'
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 16
         run: |
           yarn codecov --token="${{ secrets.CODECOV_TOKEN }}"
