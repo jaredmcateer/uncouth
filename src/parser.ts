@@ -1,5 +1,5 @@
 import type ts from 'typescript'
-import { Vc2cOptions } from './options'
+import { UncouthOptions } from './options'
 
 export const defaultCompilerOptions: ts.CompilerOptions = {
   allowNonTsExtensions: true,
@@ -8,7 +8,7 @@ export const defaultCompilerOptions: ts.CompilerOptions = {
   noEmit: true
 }
 
-export function getSingleFileProgram (content: string, options: Vc2cOptions): { ast: ts.SourceFile, program: ts.Program } {
+export function getSingleFileProgram (content: string, options: UncouthOptions): { ast: ts.SourceFile, program: ts.Program } {
   const fileName = 'ast.ts'
   const tsModule = options.typescript
 

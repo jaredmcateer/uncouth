@@ -64,7 +64,7 @@ self.MonacoEnvironment = {
   }
 }
 
-const vc2cConfig = {
+const uncouthConfig = {
   compatible: false
 }
 
@@ -96,13 +96,13 @@ const editor = monaco.editor.create(document.getElementById('editor'), {
 })
 
 const output = monaco.editor.create(document.getElementById('output'), {
-  value: convert(defaultCode, vc2cConfig),
+  value: convert(defaultCode, uncouthConfig),
   language: 'typescript',
   theme: 'vs-dark'
 })
 
 const setOutput = () => {
-  output.setValue(convert(editor.getValue(), vc2cConfig))
+  output.setValue(convert(editor.getValue(), uncouthConfig))
 }
 
 editor.onDidChangeModelContent(() => {
@@ -116,6 +116,6 @@ window.addEventListener('resize', () => {
 
 const compatibleCheckbox = document.getElementById('compatible')
 compatibleCheckbox.addEventListener('change', () => {
-  vc2cConfig.compatible = compatibleCheckbox.checked
+  uncouthConfig.compatible = compatibleCheckbox.checked
   setOutput()
 })

@@ -2,12 +2,12 @@ import program from 'commander'
 import { convertFile } from './index.js'
 import inquirer from 'inquirer'
 import { writeFileInfo } from './file'
+import { version } from '../package.json'
 
 function camelize (str: string) {
   return str.replace(/-(\w)/g, (_, c: string) => c ? c.toUpperCase() : '')
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getCmdOptions (cmd: { options: Array<{ long: string }> }) {
   const args: { [key: string]: boolean | string } = {}
   cmd.options.forEach((o: { long: string }) => {
@@ -21,8 +21,7 @@ function getCmdOptions (cmd: { options: Array<{ long: string }> }) {
 }
 
 program
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  .version((require('../../package.json') as { version: string }).version)
+  .version(version)
   .usage('<command> [options]')
 
 program
@@ -31,7 +30,7 @@ program
   .option('-v, --view', 'Output file content on stdout, and no write file.')
   .option('-o, --output', 'Output result file path.')
   .option('-r, --root <root>', 'Set root path for calc file absolute path. Default:`process.cwd()`')
-  .option('-c, --config <config>', 'Set vc2c config file path. Default: `\'.vc2c.js\'`')
+  .option('-c, --config <config>', 'Set uncouth config file path. Default: `\'.uncouth.js\'`')
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   .action(async (filePath: string, cmd) => {
     const cmdOptions = getCmdOptions(cmd)

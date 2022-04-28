@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 import { isVueFile, parseVueFile } from './utils'
-import { Vc2cOptions } from './options'
+import { UncouthOptions } from './options'
 import { log } from './debug'
 
 export enum FileKind {
@@ -22,7 +22,7 @@ export type FileInfo = {
   content: string
 }
 
-export function readVueSFCOrTsFile (filePath: string, options: Vc2cOptions): FileInfo {
+export function readVueSFCOrTsFile (filePath: string, options: UncouthOptions): FileInfo {
   const fileFsPath = (path.isAbsolute(filePath)) ? filePath : path.resolve(options.root, filePath)
   const fileContent = fs.readFileSync(fileFsPath, { encoding: 'utf8' })
   if (isVueFile(fileFsPath)) {

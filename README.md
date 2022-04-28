@@ -1,25 +1,30 @@
-# vc2c
-[![GitHub Actions status | yoyo930021/vc2c](https://github.com/yoyo930021/vc2c/workflows/Test%20Code/badge.svg)](https://github.com/yoyo930021/vc2c/actions)
-[![codecov](https://codecov.io/gh/yoyo930021/vc2c/branch/master/graph/badge.svg)](https://codecov.io/gh/yoyo930021/vc2c)
-   
-The vc2c project can convert vue class APIs to vue composition APIs in Vue.js components written in Typescript.  
+# Uncouth
+## Remove the class from your Vue components.
 
-[Demo](https://yoyo930021.github.io/vc2c/)
+Converts class based components to Composition API.
+
+Forked from the great work of yoyo930021: https://github.com/yoyo930021/vc2c
+
+[Demo](https://jaredmcateer.github.io/uncouth/)
 
 ## Introduction
-![](https://github.com/yoyo930021/vc2c/blob/master/doc/flow.png)
 
-ASTConvertPlugins is the most important part of this project, it can convert AST to composition APIs.  
-Custom decorator in ASTConvertPlugins are supported, such as `@Subscription`.  
-See [Writing a custom ASTConvert](#plugins) for more details.  
+![](https://github.com/jaredmcateer/uncouth/blob/master/doc/flow.png)
+
+ASTConvertPlugins is the most important part of this project, it can convert AST to composition APIs.
+Custom decorator in ASTConvertPlugins are supported, such as `@Subscription`.
+See [Writing a custom ASTConvert](#plugins) for more details.
 
 ## Supports
-The files to be converted must meet the criterias below:  
-- Scripts must be written in Typescript. (JavaScript may be supported in the future.)  
-- All syntax must be valid.  
+
+The files to be converted must meet the criteria below:
+
+- Scripts must be written in Typescript. (JavaScript may be supported in the future.)
+- All syntax must be valid.
 - Node.js >= 8.16
 
-### supported feature
+### Supported features
+
 - vue-class-component
   - Object
     - [x] `name`
@@ -41,6 +46,7 @@ The files to be converted must meet the criterias below:
     - [x] `render`
     - [x] `methods`
     - [ ] `Mixins`
+    - [x] `$refs`
 - vue-property-decorator
   - [x] `@Prop`
   - [ ] `@PropSync`
@@ -55,50 +61,54 @@ The files to be converted must meet the criterias below:
 
 
 ## Usage
-The vc2c project has both CLI and API interface.
+
+The uncouth project has both CLI and API interface.
 
 ### CLI
+
 ```bash
 # npm
-npx vc2c single [cliOptions] <VueOrTSfilePath>
+npx uncouth single [cliOptions] <VueOrTSfilePath>
 
 # yarn
-yarn add vc2c
-yarn vc2c single [cliOptions] <VueOrTSfilePath>
+yarn add uncouth
+yarn uncouth single [cliOptions] <VueOrTSfilePath>
 
 # volta
-sudo volta install vc2c
-vc2c single [cliOptions] <VueOrTSfilePath>
+sudo volta install uncouth
+uncouth single [cliOptions] <VueOrTSfilePath>
 ```
 
 #### Options
+
 ```
 -v, --view             Output file content on stdout, and no write file.
 -o, --output           Output result file path.
 -r, --root <root>      Set root path for calc file absolute path. Default:`process.cwd()`.
--c, --config <config>  Set vc2c config file path. Default: `'.vc2c.js'`.
+-c, --config <config>  Set uncouth config file path. Default: `'.uncouth.js'`.
 -h, --help             Output usage information.
 ```
 
 ### API
-```javascript
-const { convert, convertFile } = require('vc2c')
+
+```typescript
+const { convert, convertFile } = require('uncouth')
 
 // Get convert result script
 const resultScript = convert(
-  /* scriptContent */ fileContent, // cann't include vue file content, if vue file, only input script element content
-  /* {Vc2cConfig} */ options
+  /* scriptContent */ fileContent, // can't include vue file content, if vue file, only input script element content
+  /* {UncouthConfig} */ options
 )
 
 // Get FileInfo and scriptResult
 const { file, result } = convertFile(
   /* VueOrTSfilePath */ filePath,
   /* rootPath */ cmdOptions.root,
-  /* Vc2cConfigFilePath */ cmdOptions.config
+  /* UncouthConfigFilePath */ cmdOptions.config
 )
 ```
 
-### Vc2c Config
+### Uncouth Config
 ```typescript
 {
   // root path for calc file absolute path, if in CLI, --root value will replace. default:`process.cwd()`
@@ -112,10 +122,10 @@ const { file, result } = convertFile(
   // second setup function parameter name. default: `context`
   setupContextKey?: string
   // Use custom version typescript. default: Typescript 3.7.3
-  typesciprt?: typeof ts
+  typescript?: typeof ts
   // Use custom version vue-template-compiler, please match your project vue versions. default: vue-template-compiler 2.6.11
   vueTemplateCompiler?: typeof vueTemplateCompiler
-  // Use custom eslint file path. if file not exists, use default vc2c eslint config.  default: `.eslintrc.js`
+  // Use custom eslint file path. if file not exists, use default uncouth eslint config.  default: `.eslintrc.js`
   eslintConfigFile?: string
   // Use custom ASTConvertPlugins for ASTConvert and ASTTransform
   plugins?: ASTConvertPlugins
@@ -126,7 +136,7 @@ const { file, result } = convertFile(
 ### ASTConvertPlugins
 ```typescript
 import * as ts from 'typescript'
-// import { ASTConvertPlugins, ASTConverter, ASTTransform } from 'vc2c'
+// import { ASTConvertPlugins, ASTConverter, ASTTransform } from 'uncouth'
 export interface ASTConvertPlugins {
   [ts.SyntaxKind.Decorator]: {
     // @Component decorator argument ASTConvert
@@ -146,35 +156,35 @@ export interface ASTConvertPlugins {
 ```
 ### ASTConvertPlugins process
 - Vue Class `@Component` decorator Object:
-  - Vc2c will parse object properties of `@Component` argument by running `ASTConvert` functions in `plugins[ts.SyntaxKind.Decorator][property.kind as ts.SyntaxKind]` array.
-  - When `ASTConvert` returns a `ASTResult`, vc2c will record the `ASTResult` and proceed to the next object property.
-  - If `ASTConvert` returns `false`, vc2c will run the next `ASTConvert` function in the array.
+  - Uncouth will parse object properties of `@Component` argument by running `ASTConvert` functions in `plugins[ts.SyntaxKind.Decorator][property.kind as ts.SyntaxKind]` array.
+  - When `ASTConvert` returns a `ASTResult`, uncouth will record the `ASTResult` and proceed to the next object property.
+  - If `ASTConvert` returns `false`, uncouth will run the next `ASTConvert` function in the array.
 
 - Vue Class:
-  - Vc2c will parse `Class` AST childs by running `ASTConvert` functions in `plugins[AST.kind as ts.SyntaxKind]` array.
-  - When `ASTConvert` returns a `ASTResult`, vc2c will record the `ASTResult` and proceed to the next object property.
-  - If `ASTConvert` returns `false`, vc2c will run the next `ASTConvert` function in the array.
+  - Uncouth will parse `Class` AST childs by running `ASTConvert` functions in `plugins[AST.kind as ts.SyntaxKind]` array.
+  - When `ASTConvert` returns a `ASTResult`, uncouth will record the `ASTResult` and proceed to the next object property.
+  - If `ASTConvert` returns `false`, uncouth will run the next `ASTConvert` function in the array.
 
 - Transform:
-  - Vc2c will run all `ASTTransform` functions in `plugins.after` array after finishing the two steps above.
+  - Uncouth will run all `ASTTransform` functions in `plugins.after` array after finishing the two steps above.
   - You can use it to merge or sort AST. ex: `computed`, `removeThis`.
 
 ### Tips
 - You can use https://ts-ast-viewer.com/ to get Typescript ast.
 - You can use built-in `ASTConvert` or `ASTTransform` in `ASTConvertPlugins`.
   ```typescript
-  import { BuiltInPlugins } from 'vc2c'
+  import { BuiltInPlugins } from 'uncouth'
   const astConvert: ASTConvert = BuiltInPlugins.convertProp
   ```
 - You cas use built-in typescript AST utils.
   ```typescript
-  import { getDecoratorNames, isInternalHook } from 'vc2c'
+  import { getDecoratorNames, isInternalHook } from 'uncouth'
   ```
 - `ASTConvert` functions must be placed in order by it's strictness in `ASTConvertPlugins`. Stricter function should be placed up front.
-- If you want to use Vue any property, you can see [link](https://github.com/yoyo930021/vc2c/blob/master/src/plugins/vue-property-decorator/Watch.ts#L75).
+- If you want to use Vue any property, you can see [link](https://github.com/yoyo930021/uncouth/blob/master/src/plugins/vue-property-decorator/Watch.ts#L75).
 
 ### ASTConvert Example
-- [`built-ins`](https://github.com/yoyo930021/vc2c/blob/master/src/plugins)
+- [`built-ins`](https://github.com/yoyo930021/uncouth/blob/master/src/plugins)
 
 ## Roadmap
 - Add more TODO: comments on needed.

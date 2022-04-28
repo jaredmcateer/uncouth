@@ -3,7 +3,7 @@ import { ASTConvertPlugins } from './plugins/types'
 import { getDefaultPlugins } from './plugins'
 import * as vueTemplateCompiler from 'vue-template-compiler'
 
-export interface Vc2cOptions {
+export interface UncouthOptions {
   root: string
   debug: boolean
   compatible: boolean
@@ -15,9 +15,9 @@ export interface Vc2cOptions {
   plugins: ASTConvertPlugins
 }
 
-export type InputVc2cOptions = Partial<Vc2cOptions>
+export type InputUncouthOptions = Partial<UncouthOptions>
 
-export function getDefaultVc2cOptions (tsModule: typeof ts = ts): Vc2cOptions {
+export function getDefaultUncouthOptions (tsModule: typeof ts = ts): UncouthOptions {
   return {
     root: process.cwd(),
     debug: false,
@@ -31,7 +31,7 @@ export function getDefaultVc2cOptions (tsModule: typeof ts = ts): Vc2cOptions {
   }
 }
 
-export function mergeVc2cOptions (original: Vc2cOptions, merged: InputVc2cOptions): Vc2cOptions {
+export function mergeUncouthOptions (original: UncouthOptions, merged: InputUncouthOptions): UncouthOptions {
   return {
     ...original,
     ...merged

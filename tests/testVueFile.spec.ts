@@ -6,7 +6,7 @@ describe('testVueFile', () => {
   const filePath = 'fixture/Input.vue'
 
   it('compatible', () => {
-    const { file, result } = convertFile(filePath, __dirname, 'config/.compatible.vc2c.js')
+    const { file, result } = convertFile(filePath, __dirname, 'config/.compatible.uncouth.js')
     expect(file.fsPath.includes(path.basename(filePath))).toBeTruthy()
     expect(path.isAbsolute(file.fsPath)).toBeTruthy()
     expect(file.kind).toBe(FileKind.VUE)
@@ -17,7 +17,7 @@ describe('testVueFile', () => {
   })
 
   it('no compatible', () => {
-    const { file, result } = convertFile(filePath, __dirname, 'config/.nocompatible.vc2c.js')
+    const { file, result } = convertFile(filePath, __dirname, 'config/.nocompatible.uncouth.js')
     expect(file.fsPath.includes(path.basename(filePath))).toBeTruthy()
     expect(path.isAbsolute(file.fsPath)).toBeTruthy()
     expect(file.kind).toBe(FileKind.VUE)
