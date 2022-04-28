@@ -66,14 +66,19 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build demo
+        run:  yarn demo:build
+
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@2.0.3
+        uses: JamesIves/github-pages-deploy-action@4.3.3
         env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BASE_BRANCH: master
-          BRANCH: gh-pages
-          FOLDER: demo-dist
-          BUILD_SCRIPT: yarn install --frozen-lockfile && yarn demo:build
+          branch: gh-pages
+          folder: demo-dist
 
   release:
     needs: [lint, test]
