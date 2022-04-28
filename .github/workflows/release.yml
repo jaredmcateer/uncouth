@@ -76,7 +76,7 @@ jobs:
         run:  yarn demo:build
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@4.3.3
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
         env:
           branch: gh-pages
           folder: demo-dist
