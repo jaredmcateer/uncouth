@@ -31,7 +31,7 @@ export const convertTemplateRef: ASTConverter<ts.PropertyDeclaration> = (node, o
   }
 }
 
-function getPropertySignatures(node: ts.PropertyDeclaration) {
+function getPropertySignatures (node: ts.PropertyDeclaration) {
   if (node.name.getText() !== '$refs') {
     return false
   }
@@ -59,7 +59,7 @@ function getPropertySignatures(node: ts.PropertyDeclaration) {
   return signatures
 }
 
-function getVarStatement(tsModule: typeof ts, signature: ts.PropertySignature): [string, ts.VariableStatement] {
+function getVarStatement (tsModule: typeof ts, signature: ts.PropertySignature): [string, ts.VariableStatement] {
   const name = signature.name.getText()
   const ref = tsModule.createIdentifier('ref')
 
