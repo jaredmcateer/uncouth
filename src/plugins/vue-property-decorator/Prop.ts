@@ -70,7 +70,7 @@ export const mergeProps: ASTTransform = (astResults, options) => {
   const propASTResults = astResults.filter((el) => propTags.includes(el.tag))
   const otherASTResults = astResults.filter((el) => !propTags.includes(el.tag))
   const modelASTResult = astResults.find((el) => el.tag === 'Model')
-  const imports = propASTResults.find(el => el.imports.length > 0)?.imports || [];
+  const imports = propASTResults.find(el => el.imports.length > 0)?.imports || []
 
   const mergeASTResult: ASTResultToObject = {
     tag: 'Prop',
