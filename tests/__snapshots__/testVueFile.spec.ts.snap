@@ -4,6 +4,7 @@ exports[`testVueFile compatible 1`] = `
 "import MyComponent from 'my-component.vue'
 import {
   computed,
+  PropType,
   reactive,
   toRefs,
   ref,
@@ -32,7 +33,9 @@ export default defineComponent({
     /**
      * My foo
      */
-    foo: { type: Boolean, default: false }
+    foo: { type: Boolean, default: false },
+    bar: { type: Number as PropType<number>, default: 1 },
+    foobar: { type: Object as PropType<CustomType> }
   },
   name: 'oao',
   setup(props, context) {
@@ -131,6 +134,7 @@ exports[`testVueFile no compatible 1`] = `
 "import MyComponent from 'my-component.vue'
 import {
   computed,
+  PropType,
   reactive,
   toRefs,
   ref,
@@ -158,7 +162,9 @@ export default {
     /**
      * My foo
      */
-    foo: { type: Boolean, default: false }
+    foo: { type: Boolean, default: false },
+    bar: { type: Number as PropType<number>, default: 1 },
+    foobar: { type: Object as PropType<CustomType> }
   },
   name: 'oao',
   setup(props, context) {

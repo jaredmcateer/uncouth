@@ -3,6 +3,7 @@
 exports[`testTSFile compatible 1`] = `
 "import {
   computed,
+  PropType,
   reactive,
   toRefs,
   ref,
@@ -27,7 +28,9 @@ export default defineComponent({
     /**
      * My foo
      */
-    foo: { type: Number, default: false }
+    foo: { type: Boolean, default: false },
+    bar: { type: Number as PropType<number>, default: 1 },
+    foobar: { type: Object as PropType<CustomType> }
   },
   name: 'oao',
   setup(props, context) {
@@ -156,6 +159,7 @@ exports[`testTSFile compatible and ts config file: stderr 1`] = `""`;
 exports[`testTSFile compatible and ts config file: stdout 1`] = `
 "import {
   computed,
+  PropType,
   reactive,
   toRefs,
   ref,
@@ -180,7 +184,9 @@ export default defineComponent({
     /**
      * My foo
      */
-    foo: { type: Number, default: false }
+    foo: { type: Boolean, default: false },
+    bar: { type: Number as PropType<number>, default: 1 },
+    foobar: { type: Object as PropType<CustomType> }
   },
   name: 'oao',
   setup(props, ctx) {
@@ -308,6 +314,7 @@ export default defineComponent({
 exports[`testTSFile no compatible 1`] = `
 "import {
   computed,
+  PropType,
   reactive,
   toRefs,
   ref,
@@ -331,7 +338,9 @@ export default {
     /**
      * My foo
      */
-    foo: { type: Number, default: false }
+    foo: { type: Boolean, default: false },
+    bar: { type: Number as PropType<number>, default: 1 },
+    foobar: { type: Object as PropType<CustomType> }
   },
   name: 'oao',
   setup(props, context) {

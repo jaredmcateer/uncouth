@@ -29,6 +29,7 @@ The files to be converted must meet the criteria below:
   - Object
     - [x] `name`
     - [x] `props`
+      - [x] `PropType<...>`
     - [x] `data`
     - [ ] `computed`
     - [ ] `methods`

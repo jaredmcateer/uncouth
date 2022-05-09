@@ -30,7 +30,9 @@ export default class BasicPropertyClass extends Vue {
   /**
    * My foo
    */
-  @Prop({ type: Boolean, default: false }) foo: any
+  @Prop({ type: Boolean, default: false }) foo!
+  @Prop({ type: Number, default: 1 }) bar: number
+  @Prop({ type: Object }) foobar: CustomType
 
   @Provide() foa = 'foo'
   @Provide('bar') baz = 'bar'

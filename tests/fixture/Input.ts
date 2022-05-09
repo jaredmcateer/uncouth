@@ -22,7 +22,9 @@ export default class BasicPropertyClass extends Vue {
   /**
    * My foo
    */
-  @Prop({ type: Number, default: false }) foo!: number
+  @Prop({ type: Boolean, default: false }) foo!
+  @Prop({ type: Number, default: 1 }) bar: number
+  @Prop({ type: Object }) foobar: CustomType
 
   $refs!: {
     myDiv: HTMLDivElement
