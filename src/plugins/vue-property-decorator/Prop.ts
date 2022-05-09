@@ -1,5 +1,5 @@
 import { ASTConverter, ASTResultKind, ASTTransform, ASTResultToObject, ReferenceKind } from '../types'
-import ts, { ObjectLiteralElementLike, ObjectLiteralExpression } from 'typescript'
+import ts from 'typescript'
 import { copySyntheticComments } from '../../utils'
 
 const propDecoratorName = 'Prop'
@@ -19,7 +19,7 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
 
     if (decoratorArguments.length > 0 || hasKnowableType) {
       const propName = node.name.getText()
-      const propArguments = decoratorArguments[0] as ObjectLiteralExpression
+      const propArguments = decoratorArguments[0] as ts.ObjectLiteralExpression
       const props = propArguments.properties
         .reduce((accumulator, property) => {
           if (property.kind === ts.SyntaxKind.PropertyAssignment) {
@@ -33,7 +33,7 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
           }
 
           return accumulator
-        }, [] as ObjectLiteralElementLike[])
+        }, [] as ts.ObjectLiteralElementLike[])
 
       const args = tsModule.createObjectLiteral(props)
 
