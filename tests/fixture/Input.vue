@@ -1,86 +1,84 @@
 <template>
-  <div>
-    {{  }}
-  </div>
+  <div>{{}}</div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Prop, Component, Ref, Model, Provide, Inject } from 'vue-property-decorator'
-import MyComponent from 'my-component.vue'
+import Vue from "vue";
+import { Prop, Component, Ref, Model, Provide, Inject } from "vue-property-decorator";
+import MyComponent from "my-component.vue";
 
-const symbol = Symbol('baz')
+const symbol = Symbol("baz");
 
 /**
  * My basic tag
  */
 @Component({
-  name: 'oao',
-  props: ['bar', 'qaq', 'cac'],
-  data () {
-    const a = 'pa';
+  name: "oao",
+  props: ["bar", "qaq", "cac"],
+  data() {
+    const a = "pa";
     return {
-      a: a
-    }
-  }
+      a: a,
+    };
+  },
 })
 export default class BasicPropertyClass extends Vue {
-  @Ref() readonly anotherComponent!: HTMLElement
-  @Model('change', { type: Boolean }) readonly checked!: boolean
+  @Ref() readonly anotherComponent!: HTMLElement;
+  @Model("change", { type: Boolean }) readonly checked!: boolean;
   /**
    * My foo
    */
-  @Prop({ type: Boolean, default: false }) foo!
-  @Prop({ type: Number, default: 1 }) bar: number
-  @Prop({ type: Object }) foobar: CustomType
+  @Prop({ type: Boolean, default: false }) foo!;
+  @Prop({ type: Number, default: 1 }) bar: number;
+  @Prop({ type: Object }) foobar: CustomType;
 
-  @Provide() foa = 'foo'
-  @Provide('bar') baz = 'bar'
+  @Provide() foa = "foo";
+  @Provide("bar") baz = "bar";
 
-  @Inject() readonly foai!: string
-  @Inject('bar') readonly bari!: string
-  @Inject({ from: 'optional', default: 'default' }) readonly optional!: string
-  @Inject(symbol) readonly bazi!: string
+  @Inject() readonly foai!: string;
+  @Inject("bar") readonly bari!: string;
+  @Inject({ from: "optional", default: "default" }) readonly optional!: string;
+  @Inject(symbol) readonly bazi!: string;
 
   $refs!: {
-    myDiv: HTMLDivElement
-    mySpan
-    myComponent: MyComponent
-  }
+    myDiv: HTMLDivElement;
+    mySpan;
+    myComponent: MyComponent;
+  };
 
   /**
    * My msg
    */
-  msg = 'Vetur means "Winter" in icelandic.' //foo
+  msg = 'Vetur means "Winter" in icelandic.'; //foo
 
   /**
    * My count
    */
-  get count () {
-    return this.$store.state.count
+  get count() {
+    return this.$store.state.count;
   }
 
   /**
    * My greeting
    */
-  hello () {
-    console.log(this.msg)
+  hello() {
+    console.log(this.msg);
   }
 
   beforeDestroy() {
-    this.$emit('Tearing down');
+    this.$emit("Tearing down");
   }
 
   destroyed() {
-    console.log('destroyed')
+    console.log("destroyed");
   }
 
   refAccess() {
-    const foo = {myDiv: true};
+    const foo = { myDiv: true };
     foo.myDiv = false; // should not transform
     this.$refs.myDiv.focus();
-    this.$refs.mySpan.innerText = 'foo'
-    this.$refs.myComponent.vm.doSomething()
+    this.$refs.mySpan.innerText = "foo";
+    this.$refs.myComponent.vm.doSomething();
   }
 }
 </script>

@@ -1,3 +1,3 @@
 module.exports = {
-  compatible: true
-}
+  compatible: true,
+};

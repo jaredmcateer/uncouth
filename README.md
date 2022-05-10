@@ -1,4 +1,5 @@
 # Uncouth
+
 ## Remove the class from your Vue components.
 
 Converts class based components to Composition API.
@@ -60,7 +61,6 @@ The files to be converted must meet the criteria below:
 - [x] replace `this` to `props`, `variable`, or `context`.
 - [x] sort by dependency.
 
-
 ## Usage
 
 The uncouth project has both CLI and API interface.
@@ -93,23 +93,24 @@ uncouth single [cliOptions] <VueOrTSfilePath>
 ### API
 
 ```typescript
-const { convert, convertFile } = require('uncouth')
+const { convert, convertFile } = require("uncouth");
 
 // Get convert result script
 const resultScript = convert(
   /* scriptContent */ fileContent, // can't include vue file content, if vue file, only input script element content
   /* {UncouthConfig} */ options
-)
+);
 
 // Get FileInfo and scriptResult
 const { file, result } = convertFile(
   /* VueOrTSfilePath */ filePath,
   /* rootPath */ cmdOptions.root,
   /* UncouthConfigFilePath */ cmdOptions.config
-)
+);
 ```
 
 ### Uncouth Config
+
 ```typescript
 {
   // root path for calc file absolute path, if in CLI, --root value will replace. default:`process.cwd()`
@@ -134,34 +135,40 @@ const { file, result } = convertFile(
 ```
 
 ## Plugins
+
 ### ASTConvertPlugins
+
 ```typescript
-import * as ts from 'typescript'
+import * as ts from "typescript";
 // import { ASTConvertPlugins, ASTConverter, ASTTransform } from 'uncouth'
 export interface ASTConvertPlugins {
   [ts.SyntaxKind.Decorator]: {
     // @Component decorator argument ASTConvert
-    [ts.SyntaxKind.PropertyAssignment]: Array<ASTConverter<ts.PropertyAssignment>>
-    [ts.SyntaxKind.MethodDeclaration]: Array<ASTConverter<ts.MethodDeclaration>>
+    [ts.SyntaxKind.PropertyAssignment]: Array<ASTConverter<ts.PropertyAssignment>>;
+    [ts.SyntaxKind.MethodDeclaration]: Array<ASTConverter<ts.MethodDeclaration>>;
   };
   // Class child AST will forEach ASTConverter until return ASTResult by AST SyntaxKind
-  [ts.SyntaxKind.Identifier]: Array<ASTConverter<ts.Identifier>>
-  [ts.SyntaxKind.HeritageClause]: Array<ASTConverter<ts.HeritageClause>>
-  [ts.SyntaxKind.PropertyDeclaration]: Array<ASTConverter<ts.PropertyDeclaration>>
-  [ts.SyntaxKind.GetAccessor]: Array<ASTConverter<ts.GetAccessorDeclaration>>
-  [ts.SyntaxKind.SetAccessor]: Array<ASTConverter<ts.SetAccessorDeclaration>>
-  [ts.SyntaxKind.MethodDeclaration]: Array<ASTConverter<ts.MethodDeclaration>>
+  [ts.SyntaxKind.Identifier]: Array<ASTConverter<ts.Identifier>>;
+  [ts.SyntaxKind.HeritageClause]: Array<ASTConverter<ts.HeritageClause>>;
+  [ts.SyntaxKind.PropertyDeclaration]: Array<ASTConverter<ts.PropertyDeclaration>>;
+  [ts.SyntaxKind.GetAccessor]: Array<ASTConverter<ts.GetAccessorDeclaration>>;
+  [ts.SyntaxKind.SetAccessor]: Array<ASTConverter<ts.SetAccessorDeclaration>>;
+  [ts.SyntaxKind.MethodDeclaration]: Array<ASTConverter<ts.MethodDeclaration>>;
   // When all ASTConvert finished, run ASTTransform.
-  after: Array<ASTTransform>
+  after: Array<ASTTransform>;
 }
 ```
+
 ### ASTConvertPlugins process
+
 - Vue Class `@Component` decorator Object:
+
   - Uncouth will parse object properties of `@Component` argument by running `ASTConvert` functions in `plugins[ts.SyntaxKind.Decorator][property.kind as ts.SyntaxKind]` array.
   - When `ASTConvert` returns a `ASTResult`, uncouth will record the `ASTResult` and proceed to the next object property.
   - If `ASTConvert` returns `false`, uncouth will run the next `ASTConvert` function in the array.
 
 - Vue Class:
+
   - Uncouth will parse `Class` AST childs by running `ASTConvert` functions in `plugins[AST.kind as ts.SyntaxKind]` array.
   - When `ASTConvert` returns a `ASTResult`, uncouth will record the `ASTResult` and proceed to the next object property.
   - If `ASTConvert` returns `false`, uncouth will run the next `ASTConvert` function in the array.
@@ -171,23 +178,26 @@ export interface ASTConvertPlugins {
   - You can use it to merge or sort AST. ex: `computed`, `removeThis`.
 
 ### Tips
+
 - You can use https://ts-ast-viewer.com/ to get Typescript ast.
 - You can use built-in `ASTConvert` or `ASTTransform` in `ASTConvertPlugins`.
   ```typescript
-  import { BuiltInPlugins } from 'uncouth'
-  const astConvert: ASTConvert = BuiltInPlugins.convertProp
+  import { BuiltInPlugins } from "uncouth";
+  const astConvert: ASTConvert = BuiltInPlugins.convertProp;
   ```
 - You cas use built-in typescript AST utils.
   ```typescript
-  import { getDecoratorNames, isInternalHook } from 'uncouth'
+  import { getDecoratorNames, isInternalHook } from "uncouth";
   ```
 - `ASTConvert` functions must be placed in order by it's strictness in `ASTConvertPlugins`. Stricter function should be placed up front.
 - If you want to use Vue any property, you can see [link](https://github.com/yoyo930021/uncouth/blob/master/src/plugins/vue-property-decorator/Watch.ts#L75).
 
 ### ASTConvert Example
+
 - [`built-ins`](https://github.com/yoyo930021/uncouth/blob/master/src/plugins)
 
 ## Roadmap
+
 - Add more TODO: comments on needed.
 - Support more features.
 - Convert project.

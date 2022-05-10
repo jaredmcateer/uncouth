@@ -1,5 +1,5 @@
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.main.js'
-import { convert } from '../src/index'
+import * as monaco from "monaco-editor/esm/vs/editor/editor.main.js";
+import { convert } from "../src/index";
 
 const defaultCode = `import Vue from 'vue'
 import { Prop, Component, Ref, Model, Provide, Inject } from 'vue-property-decorator'
@@ -53,69 +53,64 @@ export default class BasicPropertyClass extends Vue {
   hello () {
     console.log(this.msg)
   }
-}`
+}`;
 
 self.MonacoEnvironment = {
   getWorkerUrl: function (moduleId, label) {
-    if (label === 'typescript' || label === 'javascript') {
-      return './ts.worker.js'
+    if (label === "typescript" || label === "javascript") {
+      return "./ts.worker.js";
     }
-    return './editor.worker.js'
-  }
-}
+    return "./editor.worker.js";
+  },
+};
 
 const uncouthConfig = {
-  compatible: false
-}
+  compatible: false,
+};
 
 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
   experimentalDecorators: true,
   noResolve: true,
-  target: 'esnext',
+  target: "esnext",
   allowNonTsExtensions: true,
   noEmit: true,
-  lib: [
-    'esnext',
-    'dom',
-    'dom.iterable',
-    'scripthost'
-  ],
-  module: 'esnext',
+  lib: ["esnext", "dom", "dom.iterable", "scripthost"],
+  module: "esnext",
   strict: true,
   esModuleInterop: true,
-  resolveJsonModule: true
-})
+  resolveJsonModule: true,
+});
 
-const editor = monaco.editor.create(document.getElementById('editor'), {
+const editor = monaco.editor.create(document.getElementById("editor"), {
   value: defaultCode,
-  language: 'typescript',
-  theme: 'vs-dark',
+  language: "typescript",
+  theme: "vs-dark",
   minimap: {
-    enabled: false
-  }
-})
+    enabled: false,
+  },
+});
 
-const output = monaco.editor.create(document.getElementById('output'), {
+const output = monaco.editor.create(document.getElementById("output"), {
   value: convert(defaultCode, uncouthConfig),
-  language: 'typescript',
-  theme: 'vs-dark'
-})
+  language: "typescript",
+  theme: "vs-dark",
+});
 
 const setOutput = () => {
-  output.setValue(convert(editor.getValue(), uncouthConfig))
-}
+  output.setValue(convert(editor.getValue(), uncouthConfig));
+};
 
 editor.onDidChangeModelContent(() => {
-  setOutput()
-})
+  setOutput();
+});
 
-window.addEventListener('resize', () => {
-  editor.layout()
-  output.layout()
-})
+window.addEventListener("resize", () => {
+  editor.layout();
+  output.layout();
+});
 
-const compatibleCheckbox = document.getElementById('compatible')
-compatibleCheckbox.addEventListener('change', () => {
-  uncouthConfig.compatible = compatibleCheckbox.checked
-  setOutput()
-})
+const compatibleCheckbox = document.getElementById("compatible");
+compatibleCheckbox.addEventListener("change", () => {
+  uncouthConfig.compatible = compatibleCheckbox.checked;
+  setOutput();
+});

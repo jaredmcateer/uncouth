@@ -1,10 +1,10 @@
-import { ASTConverter, ASTResultKind, ReferenceKind } from '../types'
-import type ts from 'typescript'
-import { copySyntheticComments } from '../../utils'
+import { ASTConverter, ASTResultKind, ReferenceKind } from "../types";
+import type ts from "typescript";
+import { copySyntheticComments } from "../../utils";
 
 export const convertMethod: ASTConverter<ts.MethodDeclaration> = (node, options) => {
-  const tsModule = options.typescript
-  const methodName = node.name.getText()
+  const tsModule = options.typescript;
+  const methodName = node.name.getText();
 
   const outputMethod = tsModule.createArrowFunction(
     node.modifiers,
@@ -13,10 +13,10 @@ export const convertMethod: ASTConverter<ts.MethodDeclaration> = (node, options)
     node.type,
     tsModule.createToken(tsModule.SyntaxKind.EqualsGreaterThanToken),
     node.body ?? tsModule.createBlock([])
-  )
+  );
 
   return {
-    tag: 'Method',
+    tag: "Method",
     kind: ASTResultKind.COMPOSITION,
     imports: [],
     reference: ReferenceKind.VARIABLE,
@@ -26,17 +26,19 @@ export const convertMethod: ASTConverter<ts.MethodDeclaration> = (node, options)
         tsModule,
         tsModule.createVariableStatement(
           undefined,
-          tsModule.createVariableDeclarationList([
-            tsModule.createVariableDeclaration(
-              tsModule.createIdentifier(methodName),
-              undefined,
-              outputMethod
-            )
-          ],
-          tsModule.NodeFlags.Const)
+          tsModule.createVariableDeclarationList(
+            [
+              tsModule.createVariableDeclaration(
+                tsModule.createIdentifier(methodName),
+                undefined,
+                outputMethod
+              ),
+            ],
+            tsModule.NodeFlags.Const
+          )
         ),
         node
-      )
-    ] as ts.Statement[]
-  }
-}
+      ),
+    ] as ts.Statement[],
+  };
+};

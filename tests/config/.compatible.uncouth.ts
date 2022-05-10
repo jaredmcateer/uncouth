@@ -1,6 +1,6 @@
-import { UncouthOptions } from '../../src'
+import { UncouthOptions } from "../../src";
 
 module.exports = {
   compatible: true,
-  setupContextKey: 'ctx'
-} as UncouthOptions
+  setupContextKey: "ctx",
+} as UncouthOptions;
