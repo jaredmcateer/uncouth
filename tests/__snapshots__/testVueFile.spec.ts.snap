@@ -43,8 +43,8 @@ export default defineComponent({
      * My count
      */
     const count = computed(() => {
-      return /* TODO: Check this convert result, it can work well in 80% case.*/ context
-        .root.$store.state.count
+      return /* TODO: Check this convert result, it can work well in 80% case.*/ context.root.$store
+        .state.count
     })
 
     const { a } = (() => {
@@ -73,8 +73,7 @@ export default defineComponent({
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null)
 
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
-      ref(null)
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(null)
 
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent =
       ref<MyComponent>(null)
@@ -172,8 +171,8 @@ export default {
      * My count
      */
     const count = computed(() => {
-      return /* TODO: Check this convert result, it can work well in 80% case.*/ context
-        .root.$store.state.count
+      return /* TODO: Check this convert result, it can work well in 80% case.*/ context.root.$store
+        .state.count
     })
 
     const { a } = (() => {
@@ -202,8 +201,7 @@ export default {
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null)
 
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
-      ref(null)
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(null)
 
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent =
       ref<MyComponent>(null)

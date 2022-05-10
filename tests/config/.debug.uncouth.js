@@ -1,4 +1,4 @@
 module.exports = {
   compatible: true,
-  debug: true
-}
+  debug: true,
+};

@@ -1,23 +1,25 @@
-import { ASTConverter, ASTResultKind, ReferenceKind } from '../types'
-import type ts from 'typescript'
-import { copySyntheticComments } from '../../utils'
+import { ASTConverter, ASTResultKind, ReferenceKind } from "../types";
+import type ts from "typescript";
+import { copySyntheticComments } from "../../utils";
 
-const modelDecoratorName = 'Model'
+const modelDecoratorName = "Model";
 
 export const convertModel: ASTConverter<ts.PropertyDeclaration> = (node, options) => {
   if (!node.decorators) {
-    return false
+    return false;
   }
-  const decorator = node.decorators.find((el) => (el.expression as ts.CallExpression).expression.getText() === modelDecoratorName)
+  const decorator = node.decorators.find(
+    (el) => (el.expression as ts.CallExpression).expression.getText() === modelDecoratorName
+  );
   if (decorator) {
-    const tsModule = options.typescript
-    const decoratorArguments = (decorator.expression as ts.CallExpression).arguments
+    const tsModule = options.typescript;
+    const decoratorArguments = (decorator.expression as ts.CallExpression).arguments;
     if (decoratorArguments.length > 1) {
-      const eventName = (decoratorArguments[0] as ts.StringLiteral).text
-      const propArguments = decoratorArguments[1]
+      const eventName = (decoratorArguments[0] as ts.StringLiteral).text;
+      const propArguments = decoratorArguments[1];
 
       return {
-        tag: 'Model',
+        tag: "Model",
         kind: ASTResultKind.OBJECT,
         imports: [],
         reference: ReferenceKind.NONE,
@@ -26,15 +28,18 @@ export const convertModel: ASTConverter<ts.PropertyDeclaration> = (node, options
           copySyntheticComments(
             tsModule,
             tsModule.createPropertyAssignment(
-              tsModule.createIdentifier('model'),
+              tsModule.createIdentifier("model"),
               tsModule.createObjectLiteral(
-                [tsModule.createPropertyAssignment(
-                  tsModule.createIdentifier('prop'),
-                  tsModule.createStringLiteral(node.name.getText())
-                ), tsModule.createPropertyAssignment(
-                  tsModule.createIdentifier('event'),
-                  tsModule.createStringLiteral(eventName)
-                )],
+                [
+                  tsModule.createPropertyAssignment(
+                    tsModule.createIdentifier("prop"),
+                    tsModule.createStringLiteral(node.name.getText())
+                  ),
+                  tsModule.createPropertyAssignment(
+                    tsModule.createIdentifier("event"),
+                    tsModule.createStringLiteral(eventName)
+                  ),
+                ],
                 true
               )
             ),
@@ -43,11 +48,11 @@ export const convertModel: ASTConverter<ts.PropertyDeclaration> = (node, options
           tsModule.createPropertyAssignment(
             tsModule.createIdentifier(node.name.getText()),
             propArguments
-          )
-        ] as ts.PropertyAssignment[]
-      }
+          ),
+        ] as ts.PropertyAssignment[],
+      };
     }
   }
 
-  return false
-}
+  return false;
+};

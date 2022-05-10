@@ -1,7 +1,7 @@
-import { convert } from '../../src'
+import { convert } from "../../src";
 
-describe('test convertRender', () => {
-  it('convert class component render function', () => {
+describe("test convertRender", () => {
+  it("convert class component render function", () => {
     const content = `
     import { Vue, Component } from 'vue-class-component'
 
@@ -11,10 +11,10 @@ describe('test convertRender', () => {
         return this.$slots.default
       }
     }
-    `
+    `;
 
-    const result = convert(content, {})
+    const result = convert(content, {});
 
-    expect(result).toMatchSnapshot()
-  })
-})
+    expect(result).toMatchSnapshot();
+  });
+});
