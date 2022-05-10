@@ -2,7 +2,8 @@ import program from "commander";
 import { convertFile } from "./index.js";
 import inquirer from "inquirer";
 import { writeFileInfo } from "./file";
-import { version } from "../package.json";
+import { readFileSync, existsSync } from "fs";
+import path from "path";
 
 function camelize(str: string) {
   return str.replace(/-(\w)/g, (_, c: string) => (c ? c.toUpperCase() : ""));
@@ -23,6 +24,11 @@ function getCmdOptions(cmd: { options: Array<{ long: string }> }) {
   return args;
 }
 
+let version = "dev-version";
+const versionPath = path.resolve(__dirname, "../../.version");
+if (existsSync(versionPath)) {
+  version = readFileSync(versionPath, "utf-8");
+}
 program.version(version).usage("<command> [options]");
 
 program
