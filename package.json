@@ -8,7 +8,7 @@
     }
   ],
   "license": "MIT",
-  "main": "dist/lib/src/index.js",
+  "main": "dist/lib/index.js",
   "typings": "dist/types/src/index.d.ts",
   "bin": {
     "uncouth": "./bin/uncouth"
@@ -20,7 +20,8 @@
     "bin",
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    ".version"
   ],
   "devDependencies": {
     "@semantic-release/git": "^9.0.0",
@@ -50,7 +51,8 @@
     "build": "tsc -p tsconfig.compile.json",
     "test": "yarn build && jest --config jest.config.js",
     "demo:prepare": "parcel build node_modules/monaco-editor/esm/vs/editor/editor.worker.js --no-source-maps -d demo-dist/ && parcel build node_modules/monaco-editor/esm/vs/language/typescript/ts.worker.js --no-source-maps -d demo-dist/",
-    "demo:build": "yarn demo:prepare && parcel build demo/index.html --no-source-maps -d demo-dist/ --public-url ./"
+    "demo:build": "yarn demo:prepare && parcel build demo/index.html --no-source-maps -d demo-dist/ --public-url ./",
+    "prepack": "scripts/write-version.sh"
   },
   "dependencies": {
     "commander": "^4.0.1",
