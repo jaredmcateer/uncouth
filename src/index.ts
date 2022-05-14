@@ -56,4 +56,5 @@ export function convertFile(
 export * from "./plugins/types";
 export { BuiltInPlugins };
 export * from "./utils";
+export { TsHelper } from "./helpers/TsHelper";
 export { getDefaultUncouthOptions, UncouthOptions } from "./options";
