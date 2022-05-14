@@ -10,7 +10,7 @@ exports[`test convertRender convert class component render function 1`] = `
   setup(props, context) {
     // TODO: Please remove unused return variable
     return {};
-  }
+  },
 });
 "
 `;

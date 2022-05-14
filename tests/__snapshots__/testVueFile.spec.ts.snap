@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`testVueFile compatible 1`] = `
-"import MyComponent from 'my-component.vue'
+"import MyComponent from \\"my-component.vue\\";
 import {
   defineComponent,
   computed,
@@ -12,18 +12,16 @@ import {
   provide,
   inject,
   onBeforeUnmount,
-  onUnmounted
-} from '@vue/composition-api'
-
-const symbol = Symbol('baz')
-
+  onUnmounted,
+} from \\"@vue/composition-api\\";
+const symbol = Symbol(\\"baz\\");
 /**
  * My basic tag
  */
 export default defineComponent({
   model: {
-    prop: 'checked',
-    event: 'change'
+    prop: \\"checked\\",
+    event: \\"change\\",
   },
   props: {
     bar: null,
@@ -35,77 +33,61 @@ export default defineComponent({
      */
     foo: { type: Boolean, default: false },
     bar: { type: Number as PropType<number>, default: 1 },
-    foobar: { type: Object as PropType<CustomType> }
+    foobar: { type: Object as PropType<CustomType> },
   },
-  name: 'oao',
+  name: \\"oao\\",
   setup(props, context) {
     /**
      * My count
      */
     const count = computed(() => {
-      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ context.root
-        .$store.state.count
-    })
-
+      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ context
+        .root.$store.state.count;
+    });
     const { a } = (() => {
-      const a = 'pa'
-
+      const a = \\"pa\\";
       return toRefs(
         reactive({
-          a: a
+          a: a,
         })
-      )
-    })()
-
-    const anotherComponent = ref<HTMLElement>(null)
-
-    provide('foa', 'foo')
-    provide('bar', 'bar')
-
-    const foai = inject<string>('foai')
-
-    const bari = inject<string>('bar')
-
-    const optional = inject<string>('optional', 'default')
-
-    const bazi = inject<string>(symbol)
-
+      );
+    })();
+    const anotherComponent = ref<HTMLElement>(null);
+    provide(\\"foa\\", \\"foo\\");
+    provide(\\"bar\\", \\"bar\\");
+    const foai = inject<string>(\\"foai\\");
+    const bari = inject<string>(\\"bar\\");
+    const optional = inject<string>(\\"optional\\", \\"default\\");
+    const bazi = inject<string>(symbol);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
-      ref<HTMLDivElement>(null)
-
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(null)
-
+      ref<HTMLDivElement>(null);
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
+      ref(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent =
-      ref<MyComponent>(null)
-
+      ref<MyComponent>(null);
     /**
      * My msg
      */
-    const msg = ref('Vetur means \\"Winter\\" in icelandic.') //foo
-
+    const msg = ref('Vetur means \\"Winter\\" in icelandic.'); //foo
     onBeforeUnmount(() => {
-      context.emit('Tearing down')
-    })
+      context.emit(\\"Tearing down\\");
+    });
     onUnmounted(() => {
-      console.log('destroyed')
-    })
-
+      console.log(\\"destroyed\\");
+    });
     const refAccess = () => {
-      const foo = { myDiv: true }
-
-      foo.myDiv = false // should not transform
-      myDiv.value!.focus()
-      mySpan.value!.innerText = 'foo'
-      myComponent.value!.vm.doSomething()
-    }
-
+      const foo = { myDiv: true };
+      foo.myDiv = false; // should not transform
+      myDiv.value!.focus();
+      mySpan.value!.innerText = \\"foo\\";
+      myComponent.value!.vm.doSomething();
+    };
     /**
      * My greeting
      */
     const hello = () => {
-      console.log(msg.value)
-    }
-
+      console.log(msg.value);
+    };
     // TODO: Please remove unused return variable
     return {
       count,
@@ -122,15 +104,15 @@ export default defineComponent({
       onBeforeUnmount,
       onUnmounted,
       refAccess,
-      hello
-    }
-  }
-})
+      hello,
+    };
+  },
+});
 "
 `;
 
 exports[`testVueFile no compatible 1`] = `
-"import MyComponent from 'my-component.vue'
+"import MyComponent from \\"my-component.vue\\";
 import {
   defineComponent,
   computed,
@@ -141,18 +123,16 @@ import {
   provide,
   inject,
   onBeforeUnmount,
-  onUnmounted
-} from 'vue'
-
-const symbol = Symbol('baz')
-
+  onUnmounted,
+} from \\"vue\\";
+const symbol = Symbol(\\"baz\\");
 /**
  * My basic tag
  */
 export default defineComponent({
   model: {
-    prop: 'checked',
-    event: 'change'
+    prop: \\"checked\\",
+    event: \\"change\\",
   },
   props: {
     bar: null,
@@ -164,77 +144,61 @@ export default defineComponent({
      */
     foo: { type: Boolean, default: false },
     bar: { type: Number as PropType<number>, default: 1 },
-    foobar: { type: Object as PropType<CustomType> }
+    foobar: { type: Object as PropType<CustomType> },
   },
-  name: 'oao',
+  name: \\"oao\\",
   setup(props, context) {
     /**
      * My count
      */
     const count = computed(() => {
-      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ context.root
-        .$store.state.count
-    })
-
+      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ context
+        .root.$store.state.count;
+    });
     const { a } = (() => {
-      const a = 'pa'
-
+      const a = \\"pa\\";
       return toRefs(
         reactive({
-          a: a
+          a: a,
         })
-      )
-    })()
-
-    const anotherComponent = ref<HTMLElement>(null)
-
-    provide('foa', 'foo')
-    provide('bar', 'bar')
-
-    const foai = inject<string>('foai')
-
-    const bari = inject<string>('bar')
-
-    const optional = inject<string>('optional', 'default')
-
-    const bazi = inject<string>(symbol)
-
+      );
+    })();
+    const anotherComponent = ref<HTMLElement>(null);
+    provide(\\"foa\\", \\"foo\\");
+    provide(\\"bar\\", \\"bar\\");
+    const foai = inject<string>(\\"foai\\");
+    const bari = inject<string>(\\"bar\\");
+    const optional = inject<string>(\\"optional\\", \\"default\\");
+    const bazi = inject<string>(symbol);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
-      ref<HTMLDivElement>(null)
-
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(null)
-
+      ref<HTMLDivElement>(null);
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
+      ref(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent =
-      ref<MyComponent>(null)
-
+      ref<MyComponent>(null);
     /**
      * My msg
      */
-    const msg = ref('Vetur means \\"Winter\\" in icelandic.') //foo
-
+    const msg = ref('Vetur means \\"Winter\\" in icelandic.'); //foo
     onBeforeUnmount(() => {
-      context.emit('Tearing down')
-    })
+      context.emit(\\"Tearing down\\");
+    });
     onUnmounted(() => {
-      console.log('destroyed')
-    })
-
+      console.log(\\"destroyed\\");
+    });
     const refAccess = () => {
-      const foo = { myDiv: true }
-
-      foo.myDiv = false // should not transform
-      myDiv.value!.focus()
-      mySpan.value!.innerText = 'foo'
-      myComponent.value!.vm.doSomething()
-    }
-
+      const foo = { myDiv: true };
+      foo.myDiv = false; // should not transform
+      myDiv.value!.focus();
+      mySpan.value!.innerText = \\"foo\\";
+      myComponent.value!.vm.doSomething();
+    };
     /**
      * My greeting
      */
     const hello = () => {
-      console.log(msg.value)
-    }
-
+      console.log(msg.value);
+    };
     // TODO: Please remove unused return variable
     return {
       count,
@@ -251,9 +215,9 @@ export default defineComponent({
       onBeforeUnmount,
       onUnmounted,
       refAccess,
-      hello
-    }
-  }
-})
+      hello,
+    };
+  },
+});
 "
 `;
