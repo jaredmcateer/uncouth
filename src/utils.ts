@@ -1,6 +1,8 @@
 import type vueTemplateParser from "vue-template-compiler";
 import type ts from "typescript";
 import { ASTResult, ASTResultKind, ReferenceKind } from "./plugins/types";
+import { TsHelper } from "./helpers/TsHelper";
+
 export function isVueFile(path: string): boolean {
   return path.endsWith(".vue");
 }
@@ -85,80 +87,8 @@ export function isPrimitiveType(tsModule: typeof ts, returnType: ts.Type): boole
   );
 }
 
-export function copySyntheticComments<T extends ts.Node>(
-  tsModule: typeof ts,
-  node: T,
-  copyNode: ts.Node
-): T {
-  const leadingComments =
-    tsModule.getLeadingCommentRanges(copyNode.getSourceFile().getFullText(), copyNode.pos) || [];
-  const trailingComments =
-    tsModule.getTrailingCommentRanges(copyNode.getSourceFile().getFullText(), copyNode.end) || [];
-
-  const getCommentText = (comment: ts.CommentRange) => {
-    return copyNode
-      .getSourceFile()
-      .getFullText()
-      .slice(comment.pos, comment.end)
-      .replace(/\/\//g, "")
-      .replace(/\/\*/g, "")
-      .replace(/\*\//g, "")
-      .replace(/ {2}\* ?/g, "* ")
-      .replace(/ \*\//g, "*/")
-      .replace(/ {2}$/g, "");
-  };
-
-  let result = node;
-  for (const comment of leadingComments) {
-    const text = getCommentText(comment);
-    result = tsModule.addSyntheticLeadingComment(
-      result,
-      comment.kind,
-      text,
-      comment.hasTrailingNewLine
-    );
-  }
-
-  for (const comment of trailingComments) {
-    const text = getCommentText(comment);
-    result = tsModule.addSyntheticTrailingComment(
-      result,
-      comment.kind,
-      text,
-      comment.hasTrailingNewLine
-    );
-  }
-
-  return node;
-}
-
-export function removeComments<T extends ts.Node>(
-  tsModule: typeof ts,
-  node: T
-): T | ts.StringLiteral {
-  if (tsModule.isStringLiteral(node)) {
-    return tsModule.createStringLiteral(node.text);
-  }
-  return node;
-}
-
-export function addTodoComment<T extends ts.Node>(
-  tsModule: typeof ts,
-  node: T,
-  text: string,
-  multiline: boolean
-): T {
-  return tsModule.addSyntheticLeadingComment(
-    node,
-    multiline
-      ? tsModule.SyntaxKind.MultiLineCommentTrivia
-      : tsModule.SyntaxKind.SingleLineCommentTrivia,
-    ` TODO: ${text}`
-  );
-}
-
 export function convertNodeToASTResult<T extends ts.Node>(
-  tsModule: typeof ts,
+  tsHelper: TsHelper,
   node: T
 ): ASTResult<T> {
   return {
@@ -167,18 +97,10 @@ export function convertNodeToASTResult<T extends ts.Node>(
     reference: ReferenceKind.NONE,
     attributes: [],
     tag: "IheritObjProperty",
-    nodes: [addTodoComment(tsModule, node, "Can't convert this object property.", false)],
+    nodes: [tsHelper.addTodoComment(node, "Can't convert this object property.", false)],
   };
 }
 
-// ts.createIdentifier() cannot call getText function, it's a hack.
-export function createIdentifier(tsModule: typeof ts, text: string): ts.Identifier {
-  const temp = tsModule.factory.createIdentifier(text);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  temp.getText = () => text;
-  return temp;
-}
-
-export function isString(val: any): val is string {
+export function isString(val: unknown): val is string {
   return typeof val === "string";
 }

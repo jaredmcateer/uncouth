@@ -1,6 +1,5 @@
 import { ASTConverter, ASTResultKind, ReferenceKind } from "../types";
 import ts from "typescript";
-import { UncouthOptions } from "../../options";
 import { TsHelper } from "../../helpers/TsHelper";
 
 export const convertTemplateRef: ASTConverter<ts.PropertyDeclaration> = (node, options) => {

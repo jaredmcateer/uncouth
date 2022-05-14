@@ -22,7 +22,6 @@ import { convertInject } from "./vue-property-decorator/Inject";
 import { convertProvide } from "./vue-property-decorator/Provide";
 import { convertTemplateRef } from "./vue-class-component/TemplateRef";
 import { TsHelper } from "../helpers/TsHelper";
-import { option } from "commander";
 
 export function getDefaultPlugins(tsModule: typeof ts): ASTConvertPlugins {
   return {
@@ -99,7 +98,7 @@ export function getASTResults(
               }
             }
             if (!converted) {
-              astResults.push(convertNodeToASTResult($t.module, property));
+              astResults.push(convertNodeToASTResult($t, property));
             }
           }
         });

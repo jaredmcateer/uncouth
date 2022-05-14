@@ -38,7 +38,7 @@ export const convertInject: ASTConverter<ts.PropertyDeclaration> = (node, option
 
     const injectArgs = [injectKeyExpr, ...(defaultValueExpr ? [defaultValueExpr] : [])];
     const injectType = node.type
-      ? [$t.factory.createKeywordTypeNode(node.type.kind as any)]
+      ? [$t.factory.createKeywordTypeNode(node.type.kind as ts.KeywordTypeSyntaxKind)]
       : undefined;
     const injectExpression = $t.createCallExpression("inject", injectType, injectArgs);
     const injectConstStatement = $t.createConstStatement(node.name.getText(), injectExpression);
