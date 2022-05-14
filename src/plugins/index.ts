@@ -1,7 +1,7 @@
-import type ts from "typescript";
+import ts from "typescript";
 import { UncouthOptions } from "../options";
 import { ASTConvertPlugins, ASTResult, ASTConverter, ASTResultKind } from "./types";
-import { copySyntheticComments, addTodoComment, convertNodeToASTResult } from "../utils";
+import { convertNodeToASTResult } from "../utils";
 import { log } from "../debug";
 import { convertObjName } from "./vue-class-component/object/ComponentName";
 import { convertObjProps } from "./vue-class-component/object/Prop";
@@ -21,6 +21,8 @@ import { convertRender } from "./vue-class-component/Render";
 import { convertInject } from "./vue-property-decorator/Inject";
 import { convertProvide } from "./vue-property-decorator/Provide";
 import { convertTemplateRef } from "./vue-class-component/TemplateRef";
+import { TsHelper } from "../helpers/TsHelper";
+import { option } from "commander";
 
 export function getDefaultPlugins(tsModule: typeof ts): ASTConvertPlugins {
   return {
@@ -72,18 +74,18 @@ export function getASTResults(
   options: UncouthOptions,
   program: ts.Program
 ): ASTResult<ts.Node>[] {
-  const tsModule = options.typescript;
+  const $t = new TsHelper(options);
   const converterPlugins = options.plugins;
 
   let astResults: ASTResult<ts.Node>[] = [];
   node.forEachChild((child) => {
-    if (tsModule.isDecorator(child)) {
-      const objExpr = getDecoratorArgumentExpr(tsModule, child.expression);
+    if ($t.module.isDecorator(child)) {
+      const objExpr = getDecoratorArgumentExpr($t.module, child.expression);
       if (objExpr) {
         objExpr.forEachChild((property) => {
-          if (property.kind in converterPlugins[tsModule.SyntaxKind.Decorator]) {
+          if (property.kind in converterPlugins[$t.module.SyntaxKind.Decorator]) {
             const objConverters = (
-              converterPlugins[tsModule.SyntaxKind.Decorator] as unknown as {
+              converterPlugins[$t.module.SyntaxKind.Decorator] as unknown as {
                 [index: number]: Array<ASTConverter<ts.Node>>;
               }
             )[property.kind];
@@ -97,7 +99,7 @@ export function getASTResults(
               }
             }
             if (!converted) {
-              astResults.push(convertNodeToASTResult(tsModule, property));
+              astResults.push(convertNodeToASTResult($t.module, property));
             }
           }
         });
@@ -129,62 +131,31 @@ export function convertASTResultToSetupFn(
   astResults: ASTResult<ts.Node>[],
   options: UncouthOptions
 ): ts.MethodDeclaration {
-  const tsModule = options.typescript;
+  const $t = new TsHelper(options);
 
-  const returnStatement = addTodoComment(
-    tsModule,
-    tsModule.createReturn(
-      tsModule.createObjectLiteral([
+  const returnStatement = $t.addTodoComment(
+    $t.factory.createReturnStatement(
+      $t.factory.createObjectLiteralExpression([
         ...astResults
           .filter((el) => el.kind === ASTResultKind.COMPOSITION)
           .reduce((array, el) => array.concat(el.attributes), [] as string[])
-          .map((el) =>
-            tsModule.createShorthandPropertyAssignment(tsModule.createIdentifier(el), undefined)
-          ),
+          .map((el) => $t.factory.createShorthandPropertyAssignment(el, undefined)),
       ])
     ),
     "Please remove unused return variable",
     false
   );
 
-  return tsModule.createMethod(
-    undefined,
-    undefined,
-    undefined,
-    tsModule.createIdentifier("setup"),
-    undefined,
-    undefined,
+  return $t.createMethod(
+    "setup",
+    [options.setupPropsKey, options.setupContextKey],
     [
-      tsModule.createParameter(
-        undefined,
-        undefined,
-        undefined,
-        tsModule.createIdentifier(options.setupPropsKey),
-        undefined,
-        undefined,
-        undefined
-      ),
-      tsModule.createParameter(
-        undefined,
-        undefined,
-        undefined,
-        tsModule.createIdentifier(options.setupContextKey),
-        undefined,
-        undefined,
-        undefined
-      ),
-    ],
-    undefined,
-    tsModule.createBlock(
-      [
-        ...(astResults
-          .filter((el) => el.kind === ASTResultKind.COMPOSITION)
-          .map((el) => el.nodes)
-          .reduce((array, el) => array.concat(el), []) as ts.Statement[]),
-        returnStatement,
-      ],
-      true
-    )
+      ...(astResults
+        .filter((el) => el.kind === ASTResultKind.COMPOSITION)
+        .map((el) => el.nodes)
+        .reduce((array, el) => array.concat(el), []) as ts.Statement[]),
+      returnStatement,
+    ]
   );
 }
 
@@ -197,7 +168,8 @@ export function convertASTResultToImport(
     default?: string;
   }
 
-  const tsModule = options.typescript;
+  const $t = new TsHelper(options);
+
   const importMap = new Map<string, Clause>();
   for (const result of astResults) {
     for (const importInfo of result.imports) {
@@ -206,6 +178,7 @@ export function convertASTResultToImport(
       if (!("default" in temp) && "default" in importInfo) {
         temp.default = importInfo.default;
       }
+      temp.named.add("defineComponent");
       for (const named of importInfo.named || []) {
         temp.named.add(named);
       }
@@ -222,18 +195,18 @@ export function convertASTResultToImport(
 
   return Array.from(importMap).map((el) => {
     const [key, clause] = el;
-    return tsModule.createImportDeclaration(
+
+    const name = clause.default ? $t.factory.createIdentifier(clause.default) : undefined;
+    const importElements = [...clause.named].map((named) =>
+      $t.factory.createImportSpecifier(false, undefined, $t.factory.createIdentifier(named))
+    );
+    const namedImports = $t.factory.createNamedImports(importElements);
+
+    return $t.factory.createImportDeclaration(
       undefined,
       undefined,
-      tsModule.createImportClause(
-        clause.default ? tsModule.createIdentifier(clause.default) : undefined,
-        tsModule.createNamedImports(
-          [...clause.named].map((named) =>
-            tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(named))
-          )
-        )
-      ),
-      tsModule.createStringLiteral(key)
+      $t.factory.createImportClause(false, name, namedImports),
+      $t.factory.createStringLiteral(key)
     );
   });
 }
@@ -243,7 +216,7 @@ export function runPlugins(
   options: UncouthOptions,
   program: ts.Program
 ): ts.Statement[] {
-  const tsModule = options.typescript;
+  const $t = new TsHelper(options);
   log("Start Run ASTPlugins");
   const results = getASTResults(node, options, program);
   log("Finished ASTPlugins");
@@ -251,38 +224,27 @@ export function runPlugins(
   log("Make setup function");
   const setupFn = convertASTResultToSetupFn(results, options);
   log("Make default export object");
-  const exportDefaultExpr = options.compatible
-    ? tsModule.createCall(tsModule.createIdentifier("defineComponent"), undefined, [
-        tsModule.createObjectLiteral(
-          [
-            ...(results
-              .filter((el) => el.kind === ASTResultKind.OBJECT)
-              .map((el) => el.nodes)
-              .reduce((array, el) => array.concat(el), []) as ts.PropertyAssignment[]),
-            setupFn,
-          ],
-          true
-        ),
-      ])
-    : tsModule.createObjectLiteral(
-        [
-          ...(results
-            .filter((el) => el.kind === ASTResultKind.OBJECT)
-            .map((el) => el.nodes)
-            .reduce((array, el) => array.concat(el), []) as ts.PropertyAssignment[]),
-          setupFn,
-        ],
-        true
-      );
-
-  const exportAssignment = copySyntheticComments(
-    tsModule,
-    tsModule.createExportAssignment(undefined, undefined, undefined, exportDefaultExpr),
-    node
+  const dcIdentifier = $t.factory.createIdentifier("defineComponent");
+  const dcOptionsProperties = [
+    ...(results
+      .filter((el) => el.kind === ASTResultKind.OBJECT)
+      .map((el) => el.nodes)
+      .reduce((array, el) => array.concat(el), []) as ts.PropertyAssignment[]),
+    setupFn,
+  ];
+  const dcOptions = $t.factory.createObjectLiteralExpression(dcOptionsProperties, true);
+  const dcExpression = $t.createCallExpression(dcIdentifier, undefined, [dcOptions]);
+  const dcExportAssignment = $t.factory.createExportAssignment(
+    undefined,
+    undefined,
+    undefined,
+    dcExpression
   );
+
+  const defineComponentExportAssignment = $t.copySyntheticComments(dcExportAssignment, node);
 
   log("Make ImportDeclaration");
   const importDeclaration = convertASTResultToImport(results, options);
 
-  return [...importDeclaration, exportAssignment];
+  return [...importDeclaration, defineComponentExportAssignment];
 }

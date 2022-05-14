@@ -1,9 +1,11 @@
 import { ASTConverter, ASTResultKind, ReferenceKind } from "../types";
 import ts from "typescript";
-import { addTodoComment, copySyntheticComments } from "../../utils";
+import { UncouthOptions } from "../../options";
+import { TsHelper } from "../../helpers/TsHelper";
 
 export const convertTemplateRef: ASTConverter<ts.PropertyDeclaration> = (node, options) => {
   const signatures = getPropertySignatures(node);
+  const tsHelper = new TsHelper(options);
 
   if (!signatures) {
     return false;
@@ -13,7 +15,7 @@ export const convertTemplateRef: ASTConverter<ts.PropertyDeclaration> = (node, o
   const names: string[] = [];
 
   signatures.forEach((signature) => {
-    const [name, statement] = getVarStatement(options.typescript, signature);
+    const [name, statement] = getVarStatement(tsHelper, signature);
     names.push(name);
     refs.push(statement);
   });
@@ -21,12 +23,7 @@ export const convertTemplateRef: ASTConverter<ts.PropertyDeclaration> = (node, o
   return {
     tag: "TemplateRef",
     kind: ASTResultKind.COMPOSITION,
-    imports: [
-      {
-        named: ["ref"],
-        external: options.compatible ? "@vue/composition-api" : "vue",
-      },
-    ],
+    imports: tsHelper.namedImports(["ref"]),
     reference: ReferenceKind.TEMPLATE_REF,
     attributes: names,
     nodes: refs,
@@ -58,33 +55,22 @@ function getPropertySignatures(node: ts.PropertyDeclaration) {
 }
 
 function getVarStatement(
-  tsModule: typeof ts,
+  tsHelper: TsHelper,
   signature: ts.PropertySignature
 ): [string, ts.VariableStatement] {
+  const $t = tsHelper;
+
   const name = signature.name.getText();
-  const ref = tsModule.createIdentifier("ref");
 
-  const callExpr = tsModule.createCall(ref, signature.type ? [signature.type] : undefined, [
-    tsModule.createNull(),
-  ]);
+  const refType = signature.type ? [signature.type] : undefined;
+  const callExpr = $t.createCallExpression("ref", refType, [$t.factory.createNull()]);
+  const refConstStatement = $t.createConstStatement(name, callExpr);
 
-  const varDeclaration = tsModule.createVariableDeclaration(
-    tsModule.createIdentifier(name),
-    undefined,
-    callExpr
-  );
-  const varDeclarationList = tsModule.createVariableDeclarationList(
-    [varDeclaration],
-    tsModule.NodeFlags.Const
-  );
-  const varStatement = tsModule.createVariableStatement(undefined, varDeclarationList);
-
-  const varStatementWithTodo = addTodoComment(
-    tsModule,
-    varStatement,
+  const refConstWithTodo = $t.addTodoComment(
+    refConstStatement,
     "Check for potential naming collisions from $refs conversion",
     true
   );
 
-  return [name, copySyntheticComments(tsModule, varStatementWithTodo, signature)];
+  return [name, $t.copySyntheticComments(refConstWithTodo, signature)];
 }

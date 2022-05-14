@@ -1,76 +1,50 @@
 import { ASTConverter, ASTResultKind, ReferenceKind } from "../../types";
 import type ts from "typescript";
+import { TsHelper } from "../../../helpers/TsHelper";
 
 export const convertObjData: ASTConverter<ts.MethodDeclaration> = (node, options) => {
   if (node.name.getText() === "data") {
-    const tsModule = options.typescript;
-    const returnStatement = node.body?.statements.find((el) => tsModule.isReturnStatement(el)) as
+    const $t = new TsHelper(options);
+
+    const returnStatement = node.body?.statements.find((el) => $t.module.isReturnStatement(el)) as
       | ts.ReturnStatement
       | undefined;
+
     if (!returnStatement || !returnStatement.expression) return false;
-    const attrutibes = (returnStatement.expression as ts.ObjectLiteralExpression).properties.map(
+
+    const attributes = (returnStatement.expression as ts.ObjectLiteralExpression).properties.map(
       (el) => el.name?.getText() ?? ""
     );
-    const arrowFn = tsModule.createArrowFunction(
-      node.modifiers,
-      [],
-      [],
-      undefined,
-      tsModule.createToken(tsModule.SyntaxKind.EqualsGreaterThanToken),
-      tsModule.createBlock(
-        node.body?.statements.map((el) => {
-          if (tsModule.isReturnStatement(el)) {
-            return tsModule.createReturn(
-              tsModule.createCall(tsModule.createIdentifier("toRefs"), undefined, [
-                tsModule.createCall(
-                  tsModule.createIdentifier("reactive"),
-                  undefined,
-                  returnStatement.expression ? [returnStatement.expression] : []
-                ),
-              ])
-            );
-          }
-          return el;
-        }) ?? [],
-        true
-      )
+    const bodyStatements =
+      node.body?.statements.map((el) => {
+        if ($t.module.isReturnStatement(el)) {
+          const returnExpr = returnStatement.expression ? [returnStatement.expression] : [];
+          const reactiveExpression = $t.createCallExpression("reactive", undefined, returnExpr);
+          const toRefsExpression = $t.createCallExpression("toRefs", undefined, [
+            reactiveExpression,
+          ]);
+
+          return $t.factory.createReturnStatement(toRefsExpression);
+        }
+        return el;
+      }) ?? [];
+
+    const arrowFn = $t.createArrowFunctionFromNode(node, bodyStatements, true);
+    const iffeFn = $t.makeIife(arrowFn);
+
+    const bindingElements = attributes.map((el) =>
+      $t.factory.createBindingElement(undefined, undefined, el, undefined)
     );
+    const objBindingPattern = $t.factory.createObjectBindingPattern(bindingElements);
+    const dataRefsConst = $t.createConstStatement(objBindingPattern, iffeFn);
 
     return {
       tag: "Data-ref",
       kind: ASTResultKind.COMPOSITION,
-      imports: [
-        {
-          named: ["reactive", "toRefs"],
-          external: options.compatible ? "@vue/composition-api" : "vue",
-        },
-      ],
+      imports: $t.namedImports(["reactive", "toRefs"]),
       reference: ReferenceKind.VARIABLE_VALUE,
-      attributes: attrutibes,
-      nodes: [
-        tsModule.createVariableStatement(
-          undefined,
-          tsModule.createVariableDeclarationList(
-            [
-              tsModule.createVariableDeclaration(
-                tsModule.createObjectBindingPattern(
-                  attrutibes.map((el) =>
-                    tsModule.createBindingElement(
-                      undefined,
-                      undefined,
-                      tsModule.createIdentifier(el),
-                      undefined
-                    )
-                  )
-                ),
-                undefined,
-                tsModule.createCall(tsModule.createParen(arrowFn), undefined, [])
-              ),
-            ],
-            tsModule.NodeFlags.Const
-          )
-        ),
-      ] as ts.Statement[],
+      attributes: attributes,
+      nodes: [dataRefsConst],
     };
   }
 

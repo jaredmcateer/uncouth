@@ -1,6 +1,6 @@
 import { ASTConverter, ASTResultKind, ReferenceKind } from "../types";
-import type ts from "typescript";
-import { copySyntheticComments } from "../../utils";
+import ts from "typescript";
+import { TsHelper } from "../../helpers/TsHelper";
 
 const provideDecoratorName = "Provide";
 
@@ -12,33 +12,23 @@ export const convertProvide: ASTConverter<ts.PropertyDeclaration> = (node, optio
     (el) => (el.expression as ts.CallExpression).expression.getText() === provideDecoratorName
   );
   if (decorator) {
-    const tsModule = options.typescript;
+    const $t = new TsHelper(options);
     const decoratorArguments = (decorator.expression as ts.CallExpression).arguments;
     const provideKeyExpr: ts.Expression =
       decoratorArguments.length > 0
         ? decoratorArguments[0]
-        : tsModule.createStringLiteral(node.name.getText());
+        : $t.factory.createStringLiteral(node.name.getText());
 
+    const provideArgs = [provideKeyExpr, ...(node.initializer ? [node.initializer] : [])];
     return {
       tag: "Provide",
       kind: ASTResultKind.COMPOSITION,
-      imports: [
-        {
-          named: ["provide"],
-          external: options.compatible ? "@vue/composition-api" : "vue",
-        },
-      ],
+      imports: $t.namedImports(["provide"]),
       reference: ReferenceKind.NONE,
       attributes: [],
       nodes: [
-        copySyntheticComments(
-          tsModule,
-          tsModule.createExpressionStatement(
-            tsModule.createCall(tsModule.createIdentifier("provide"), undefined, [
-              provideKeyExpr,
-              ...(node.initializer ? [node.initializer] : []),
-            ])
-          ),
+        $t.copySyntheticComments(
+          $t.createExpressionStatement("provide", undefined, provideArgs),
           node
         ),
       ] as ts.Statement[],

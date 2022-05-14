@@ -1,19 +1,13 @@
 import { ASTConverter, ASTResultKind, ReferenceKind } from "../types";
 import type ts from "typescript";
-import { copySyntheticComments } from "../../utils";
+import { TsHelper } from "../../helpers/TsHelper";
 
 export const convertMethod: ASTConverter<ts.MethodDeclaration> = (node, options) => {
-  const tsModule = options.typescript;
+  const $t = new TsHelper(options);
   const methodName = node.name.getText();
 
-  const outputMethod = tsModule.createArrowFunction(
-    node.modifiers,
-    node.typeParameters,
-    node.parameters,
-    node.type,
-    tsModule.createToken(tsModule.SyntaxKind.EqualsGreaterThanToken),
-    node.body ?? tsModule.createBlock([])
-  );
+  const outputMethod = $t.createArrowFunctionFromNode(node);
+  const methodConstStatement = $t.createConstStatement(methodName, outputMethod);
 
   return {
     tag: "Method",
@@ -21,24 +15,6 @@ export const convertMethod: ASTConverter<ts.MethodDeclaration> = (node, options)
     imports: [],
     reference: ReferenceKind.VARIABLE,
     attributes: [methodName],
-    nodes: [
-      copySyntheticComments(
-        tsModule,
-        tsModule.createVariableStatement(
-          undefined,
-          tsModule.createVariableDeclarationList(
-            [
-              tsModule.createVariableDeclaration(
-                tsModule.createIdentifier(methodName),
-                undefined,
-                outputMethod
-              ),
-            ],
-            tsModule.NodeFlags.Const
-          )
-        ),
-        node
-      ),
-    ] as ts.Statement[],
+    nodes: [$t.copySyntheticComments(methodConstStatement, node)],
   };
 };

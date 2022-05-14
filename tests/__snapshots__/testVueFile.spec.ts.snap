@@ -3,6 +3,7 @@
 exports[`testVueFile compatible 1`] = `
 "import MyComponent from 'my-component.vue'
 import {
+  defineComponent,
   computed,
   PropType,
   reactive,
@@ -11,8 +12,7 @@ import {
   provide,
   inject,
   onBeforeUnmount,
-  onUnmounted,
-  defineComponent
+  onUnmounted
 } from '@vue/composition-api'
 
 const symbol = Symbol('baz')
@@ -43,8 +43,8 @@ export default defineComponent({
      * My count
      */
     const count = computed(() => {
-      return /* TODO: Check this convert result, it can work well in 80% case.*/ context.root.$store
-        .state.count
+      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ context.root
+        .$store.state.count
     })
 
     const { a } = (() => {
@@ -132,6 +132,7 @@ export default defineComponent({
 exports[`testVueFile no compatible 1`] = `
 "import MyComponent from 'my-component.vue'
 import {
+  defineComponent,
   computed,
   PropType,
   reactive,
@@ -148,7 +149,7 @@ const symbol = Symbol('baz')
 /**
  * My basic tag
  */
-export default {
+export default defineComponent({
   model: {
     prop: 'checked',
     event: 'change'
@@ -171,8 +172,8 @@ export default {
      * My count
      */
     const count = computed(() => {
-      return /* TODO: Check this convert result, it can work well in 80% case.*/ context.root.$store
-        .state.count
+      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ context.root
+        .$store.state.count
     })
 
     const { a } = (() => {
@@ -253,6 +254,6 @@ export default {
       hello
     }
   }
-}
+})
 "
 `;

@@ -30,7 +30,7 @@ export function readVueSFCOrTsFile(filePath: string, options: UncouthOptions): F
   if (isVueFile(fileFsPath)) {
     const scriptContent = parseVueFile(options.vueTemplateCompiler, fileContent).script;
     if (scriptContent) {
-      log(`Readed Vue file: ${fileFsPath}`);
+      log(`Read Vue file: ${fileFsPath}`);
       return {
         fsPath: fileFsPath,
         kind: FileKind.VUE,
@@ -40,9 +40,9 @@ export function readVueSFCOrTsFile(filePath: string, options: UncouthOptions): F
         fileContent,
       };
     }
-    throw new Error("The Vue SFC don't have sciprt element.");
+    throw new Error("The Vue SFC doesn't have script element.");
   } else {
-    log(`Readed TS file: ${fileFsPath}`);
+    log(`Read TS file: ${fileFsPath}`);
     return {
       fsPath: fileFsPath,
       kind: FileKind.TS,

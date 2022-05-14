@@ -1,6 +1,6 @@
 import { ASTConverter, ASTResultKind, ReferenceKind } from "../types";
 import type ts from "typescript";
-import { copySyntheticComments } from "../../utils";
+import { TsHelper } from "../../helpers/TsHelper";
 
 const emitDecoratorName = "Emit";
 
@@ -16,37 +16,34 @@ export const convertEmitMethod: ASTConverter<ts.MethodDeclaration> = (node, opti
     (el) => (el.expression as ts.CallExpression).expression.getText() === emitDecoratorName
   );
   if (decorator) {
-    const tsModule = options.typescript;
+    const $t = new TsHelper(options);
+
     const methodName = node.name.getText();
 
     const decoratorArguments = (decorator.expression as ts.CallExpression).arguments;
     const eventName =
-      decoratorArguments.length > 0 && tsModule.isStringLiteral(decoratorArguments[0])
+      decoratorArguments.length > 0 && $t.module.isStringLiteral(decoratorArguments[0])
         ? (decoratorArguments[0] as ts.StringLiteral).text
         : undefined;
 
     const createEmit = (event: string, expressions: ts.Expression[]) =>
-      tsModule.createExpressionStatement(
-        tsModule.createCall(
-          tsModule.createPropertyAccess(
-            tsModule.createIdentifier("context"),
-            tsModule.createIdentifier("emit")
-          ),
-          undefined,
-          [tsModule.createStringLiteral(hyphenate(methodName)), ...expressions]
-        )
+      $t.createExpressionStatement(
+        $t.createCallExpression($t.createPropertyAccess("context", "emit"), undefined, [
+          $t.factory.createStringLiteral(hyphenate(methodName)),
+          ...expressions,
+        ])
       );
 
     const valueIdentifier =
       node.parameters.length > 0
-        ? tsModule.createIdentifier(node.parameters[0].name.getText())
+        ? $t.factory.createIdentifier(node.parameters[0].name.getText())
         : undefined;
 
     let haveResult = false;
     const transformer: () => ts.TransformerFactory<ts.Statement> = () => {
       return (context) => {
         const deepVisitor: ts.Visitor = (node) => {
-          if (tsModule.isReturnStatement(node)) {
+          if ($t.module.isReturnStatement(node)) {
             haveResult = true;
             return createEmit(
               eventName || hyphenate(methodName),
@@ -55,18 +52,20 @@ export const convertEmitMethod: ASTConverter<ts.MethodDeclaration> = (node, opti
               )
             );
           }
-          return tsModule.visitEachChild(node, deepVisitor, context);
+          return $t.module.visitEachChild(node, deepVisitor, context);
         };
 
-        return (node) => tsModule.visitNode(node, deepVisitor);
+        return (node) => $t.module.visitNode(node, deepVisitor);
       };
     };
 
-    const originalBodyStatements = node.body ? node.body.statements : tsModule.createNodeArray([]);
-    let bodyStatements = tsModule.transform(
+    const originalBodyStatements = node.body
+      ? node.body.statements
+      : $t.factory.createNodeArray([]);
+    let bodyStatements = $t.module.transform(
       originalBodyStatements.map((el) => el),
       [transformer()],
-      { module: tsModule.ModuleKind.ESNext }
+      { module: $t.module.ModuleKind.ESNext }
     ).transformed;
     if (!haveResult) {
       bodyStatements = [
@@ -75,14 +74,8 @@ export const convertEmitMethod: ASTConverter<ts.MethodDeclaration> = (node, opti
       ];
     }
 
-    const outputMethod = tsModule.createArrowFunction(
-      node.modifiers,
-      node.typeParameters,
-      node.parameters,
-      node.type,
-      tsModule.createToken(tsModule.SyntaxKind.EqualsGreaterThanToken),
-      tsModule.createBlock(bodyStatements, true)
-    );
+    const outputMethod = $t.createArrowFunctionFromNode(node, bodyStatements, true);
+    const emitConstStatement = $t.createConstStatement(methodName, outputMethod);
 
     return {
       tag: "Emit",
@@ -90,25 +83,7 @@ export const convertEmitMethod: ASTConverter<ts.MethodDeclaration> = (node, opti
       imports: [],
       reference: ReferenceKind.VARIABLE,
       attributes: [methodName],
-      nodes: [
-        copySyntheticComments(
-          tsModule,
-          tsModule.createVariableStatement(
-            undefined,
-            tsModule.createVariableDeclarationList(
-              [
-                tsModule.createVariableDeclaration(
-                  tsModule.createIdentifier(methodName),
-                  undefined,
-                  outputMethod
-                ),
-              ],
-              tsModule.NodeFlags.Const
-            )
-          ),
-          node
-        ),
-      ] as ts.Statement[],
+      nodes: [$t.copySyntheticComments(emitConstStatement, node)] as ts.Statement[],
     };
   }
 

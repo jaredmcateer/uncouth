@@ -1,73 +1,29 @@
 import { ASTConverter, ASTResultKind, ASTTransform, ASTResult, ReferenceKind } from "../types";
 import type ts from "typescript";
-import { copySyntheticComments } from "../../utils";
+import { TsHelper } from "../../helpers/TsHelper";
 
-export const convertGetter: ASTConverter<ts.GetAccessorDeclaration> = (node, options) => {
-  const tsModule = options.typescript;
-  const computedName = node.name.getText();
+const convertAccessor =
+  (type: "setter" | "getter"): ASTConverter<ts.AccessorDeclaration> =>
+  (node, options) => {
+    const $t = new TsHelper(options);
+    const computedName = node.name.getText();
+    const computedArrowFunction = $t.createArrowFunctionFromNode(node);
 
-  return {
-    tag: "Computed-getter",
-    kind: ASTResultKind.COMPOSITION,
-    imports: [
-      {
-        named: ["computed"],
-        external: options.compatible ? "@vue/composition-api" : "vue",
-      },
-    ],
-    reference: ReferenceKind.VARIABLE,
-    attributes: [computedName],
-    nodes: [
-      copySyntheticComments(
-        tsModule,
-        tsModule.createArrowFunction(
-          undefined,
-          undefined,
-          [],
-          undefined,
-          tsModule.createToken(tsModule.SyntaxKind.EqualsGreaterThanToken),
-          node.body ?? tsModule.createBlock([])
-        ),
-        node
-      ),
-    ],
+    return {
+      tag: `Computed-${type}`,
+      kind: ASTResultKind.COMPOSITION,
+      imports: $t.namedImports(["computed"]),
+      reference: ReferenceKind.VARIABLE,
+      attributes: [computedName],
+      nodes: [$t.copySyntheticComments(computedArrowFunction, node)],
+    };
   };
-};
 
-export const convertSetter: ASTConverter<ts.SetAccessorDeclaration> = (node, options) => {
-  const tsModule = options.typescript;
-  const computedName = node.name.getText();
-
-  return {
-    tag: "Computed-setter",
-    kind: ASTResultKind.COMPOSITION,
-    imports: [
-      {
-        named: ["computed"],
-        external: options.compatible ? "@vue/composition-api" : "vue",
-      },
-    ],
-    reference: ReferenceKind.VARIABLE,
-    attributes: [computedName],
-    nodes: [
-      copySyntheticComments(
-        tsModule,
-        tsModule.createArrowFunction(
-          undefined,
-          node.typeParameters,
-          node.parameters,
-          undefined,
-          tsModule.createToken(tsModule.SyntaxKind.EqualsGreaterThanToken),
-          node.body ?? tsModule.createBlock([])
-        ),
-        node
-      ),
-    ],
-  };
-};
+export const convertGetter: ASTConverter<ts.GetAccessorDeclaration> = convertAccessor("getter");
+export const convertSetter: ASTConverter<ts.SetAccessorDeclaration> = convertAccessor("setter");
 
 export const mergeComputed: ASTTransform = (astResults, options) => {
-  const tsModule = options.typescript;
+  const $t = new TsHelper(options);
   const getterASTResults = astResults.filter((el) => el.tag === "Computed-getter");
   const setterASTResults = astResults.filter((el) => el.tag === "Computed-setter");
   const otherASTResults = astResults.filter(
@@ -81,58 +37,35 @@ export const mergeComputed: ASTTransform = (astResults, options) => {
 
     const setter = setterASTResults.find((el) => el.attributes.includes(getterName));
 
-    const leadingComments = setter ? [] : tsModule.getSyntheticLeadingComments(getter.nodes[0]);
-    const trailingComments = setter ? [] : tsModule.getSyntheticTrailingComments(getter.nodes[0]);
+    const leadingComments = setter ? [] : $t.module.getSyntheticLeadingComments(getter.nodes[0]);
+    const trailingComments = setter ? [] : $t.module.getSyntheticTrailingComments(getter.nodes[0]);
 
-    const resultNode = tsModule.createVariableStatement(
-      undefined,
-      tsModule.createVariableDeclarationList(
-        [
-          tsModule.createVariableDeclaration(
-            tsModule.createIdentifier(getterName),
-            undefined,
-            tsModule.createCall(tsModule.createIdentifier("computed"), undefined, [
-              setter
-                ? tsModule.createObjectLiteral(
-                    [
-                      tsModule.createPropertyAssignment(
-                        tsModule.createIdentifier("get"),
-                        getter.nodes[0] as ts.Expression
-                      ),
-                      tsModule.createPropertyAssignment(
-                        tsModule.createIdentifier("set"),
-                        setter.nodes[0] as ts.Expression
-                      ),
-                    ],
-                    true
-                  )
-                : (tsModule.setSyntheticTrailingComments(
-                    tsModule.setSyntheticLeadingComments(getter.nodes[0], undefined),
-                    undefined
-                  ) as ts.Expression),
-            ])
-          ),
-        ],
-        tsModule.NodeFlags.Const
-      )
-    );
+    let computedExpression: ts.Expression;
+    if (setter) {
+      computedExpression = $t.factory.createObjectLiteralExpression([
+        $t.factory.createPropertyAssignment("get", getter.nodes[0] as ts.Expression),
+        $t.factory.createPropertyAssignment("set", setter.nodes[0] as ts.Expression),
+      ]);
+    } else {
+      computedExpression = $t.module.setSyntheticTrailingComments(
+        $t.module.setSyntheticLeadingComments(getter.nodes[0] as ts.Expression, undefined),
+        undefined
+      );
+    }
+    const computedCallExpr = $t.createCallExpression("computed", undefined, [computedExpression]);
+    const computedConstStatement = $t.createConstStatement(getterName, computedCallExpr);
 
     computedASTResults.push({
       tag: "Computed",
       kind: ASTResultKind.COMPOSITION,
-      imports: [
-        {
-          named: ["computed"],
-          external: options.compatible ? "@vue/composition-api" : "vue",
-        },
-      ],
+      imports: $t.namedImports(["computed"]),
       reference: ReferenceKind.VARIABLE_VALUE,
       attributes: [getterName],
       nodes: [
         setter
-          ? resultNode
-          : tsModule.setSyntheticTrailingComments(
-              tsModule.setSyntheticLeadingComments(resultNode, leadingComments),
+          ? computedConstStatement
+          : $t.module.setSyntheticTrailingComments(
+              $t.module.setSyntheticLeadingComments(computedConstStatement, leadingComments),
               trailingComments
             ),
       ] as ts.Statement[],

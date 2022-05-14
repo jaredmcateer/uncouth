@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`test convertRender convert class component render function 1`] = `
-"export default {
+"export default defineComponent({
   props: {},
   name: \\"TestComp\\",
   render() {
@@ -11,6 +11,6 @@ exports[`test convertRender convert class component render function 1`] = `
     // TODO: Please remove unused return variable
     return {};
   }
-};
+});
 "
 `;

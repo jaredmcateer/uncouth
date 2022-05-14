@@ -1,8 +1,9 @@
 import { ASTConverter, ASTResultKind, ASTTransform, ReferenceKind } from "../types";
 import type ts from "typescript";
+import { TsHelper } from "../../helpers/TsHelper";
 
 export const convertName: ASTConverter<ts.Identifier> = (node, options) => {
-  const tsModule = options.typescript;
+  const $t = new TsHelper(options);
   return {
     tag: "Class-Name",
     kind: ASTResultKind.OBJECT,
@@ -10,10 +11,7 @@ export const convertName: ASTConverter<ts.Identifier> = (node, options) => {
     reference: ReferenceKind.NONE,
     attributes: [],
     nodes: [
-      tsModule.createPropertyAssignment(
-        tsModule.createIdentifier("name"),
-        tsModule.createStringLiteral(node.getText())
-      ),
+      $t.factory.createPropertyAssignment("name", $t.factory.createStringLiteral(node.getText())),
     ],
   };
 };
