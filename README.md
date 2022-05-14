@@ -127,8 +127,8 @@ const { file, result } = convertFile(
   typescript?: typeof ts
   // Use custom version vue-template-compiler, please match your project vue versions. default: vue-template-compiler 2.6.11
   vueTemplateCompiler?: typeof vueTemplateCompiler
-  // Use custom eslint file path. if file not exists, use default uncouth eslint config.  default: `.eslintrc.js`
-  eslintConfigFile?: string
+  // Use custom prettier config file path. if file does not exist, use default uncouth prettier config.  default: `.prettierrc`
+  prettierConfig?: string
   // Use custom ASTConvertPlugins for ASTConvert and ASTTransform
   plugins?: ASTConvertPlugins
 }
