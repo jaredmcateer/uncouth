@@ -2,6 +2,7 @@
 
 exports[`testTSFile compatible 1`] = `
 "import {
+  defineComponent,
   computed,
   PropType,
   reactive,
@@ -10,8 +11,7 @@ exports[`testTSFile compatible 1`] = `
   onBeforeUnmount,
   onUnmounted,
   watch,
-  onMounted,
-  defineComponent
+  onMounted
 } from '@vue/composition-api'
 
 /**
@@ -38,8 +38,8 @@ export default defineComponent({
      * My count
      */
     const count = computed(() => {
-      return /* TODO: Check this convert result, it can work well in 80% case.*/ context.root.$store
-        .state.count
+      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ context.root
+        .$store.state.count
     })
 
     const { a } = (() => {
@@ -157,6 +157,7 @@ exports[`testTSFile compatible and ts config file: stderr 1`] = `""`;
 
 exports[`testTSFile compatible and ts config file: stdout 1`] = `
 "import {
+  defineComponent,
   computed,
   PropType,
   reactive,
@@ -165,8 +166,7 @@ exports[`testTSFile compatible and ts config file: stdout 1`] = `
   onBeforeUnmount,
   onUnmounted,
   watch,
-  onMounted,
-  defineComponent
+  onMounted
 } from '@vue/composition-api'
 
 /**
@@ -193,7 +193,7 @@ export default defineComponent({
      * My count
      */
     const count = computed(() => {
-      return /* TODO: Check this convert result, it can work well in 80% case.*/ ctx.root.$store
+      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ ctx.root.$store
         .state.count
     })
 
@@ -311,6 +311,7 @@ export default defineComponent({
 
 exports[`testTSFile no compatible 1`] = `
 "import {
+  defineComponent,
   computed,
   PropType,
   reactive,
@@ -325,7 +326,7 @@ exports[`testTSFile no compatible 1`] = `
 /**
  * My basic tag
  */
-export default {
+export default defineComponent({
   model: {
     prop: 'checked',
     event: 'change'
@@ -346,8 +347,8 @@ export default {
      * My count
      */
     const count = computed(() => {
-      return /* TODO: Check this convert result, it can work well in 80% case.*/ context.root.$store
-        .state.count
+      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ context.root
+        .$store.state.count
     })
 
     const { a } = (() => {
@@ -457,6 +458,6 @@ export default {
       hello
     }
   }
-}
+})
 "
 `;

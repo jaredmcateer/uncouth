@@ -55,7 +55,8 @@ export function convertAST(
 
   log("output result code");
   const printer = tsModule.createPrinter();
-  const result = printer.printFile(tsModule.updateSourceFileNode(sourceFile, resultStatements));
+  const { factory } = tsModule;
+  const result = printer.printFile(factory.updateSourceFile(sourceFile, resultStatements));
 
   return result;
 }

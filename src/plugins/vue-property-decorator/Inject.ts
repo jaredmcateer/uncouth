@@ -1,6 +1,6 @@
 import { ASTConverter, ASTResultKind, ReferenceKind } from "../types";
 import type ts from "typescript";
-import { copySyntheticComments } from "../../utils";
+import { TsHelper } from "../../helpers/TsHelper";
 
 const injectDecoratorName = "Inject";
 
@@ -12,21 +12,23 @@ export const convertInject: ASTConverter<ts.PropertyDeclaration> = (node, option
     (el) => (el.expression as ts.CallExpression).expression.getText() === injectDecoratorName
   );
   if (decorator) {
-    const tsModule = options.typescript;
+    const $t = new TsHelper(options);
+
     const decoratorArguments = (decorator.expression as ts.CallExpression).arguments;
-    let injectKeyExpr: ts.Expression = tsModule.createStringLiteral(node.name.getText());
+    let injectKeyExpr: ts.Expression = $t.factory.createStringLiteral(node.name.getText());
     let defaultValueExpr: ts.Expression | undefined;
+
     if (decoratorArguments.length > 0) {
       const injectArgument = decoratorArguments[0];
-      if (tsModule.isObjectLiteralExpression(injectArgument)) {
+      if ($t.module.isObjectLiteralExpression(injectArgument)) {
         const fromProperty = injectArgument.properties.find((el) => el.name?.getText() === "from");
-        if (fromProperty && tsModule.isPropertyAssignment(fromProperty)) {
+        if (fromProperty && $t.module.isPropertyAssignment(fromProperty)) {
           injectKeyExpr = fromProperty.initializer;
         }
         const defaultProperty = injectArgument.properties.find(
           (el) => el.name?.getText() === "default"
         );
-        if (defaultProperty && tsModule.isPropertyAssignment(defaultProperty)) {
+        if (defaultProperty && $t.module.isPropertyAssignment(defaultProperty)) {
           defaultValueExpr = defaultProperty.initializer;
         }
       } else {
@@ -34,41 +36,20 @@ export const convertInject: ASTConverter<ts.PropertyDeclaration> = (node, option
       }
     }
 
+    const injectArgs = [injectKeyExpr, ...(defaultValueExpr ? [defaultValueExpr] : [])];
+    const injectType = node.type
+      ? [$t.factory.createKeywordTypeNode(node.type.kind as any)]
+      : undefined;
+    const injectExpression = $t.createCallExpression("inject", injectType, injectArgs);
+    const injectConstStatement = $t.createConstStatement(node.name.getText(), injectExpression);
+
     return {
       tag: "Inject",
       kind: ASTResultKind.COMPOSITION,
-      imports: [
-        {
-          named: ["inject"],
-          external: options.compatible ? "@vue/composition-api" : "vue",
-        },
-      ],
+      imports: $t.namedImports(["inject"]),
       reference: ReferenceKind.VARIABLE,
       attributes: [node.name.getText()],
-      nodes: [
-        copySyntheticComments(
-          tsModule,
-          tsModule.createVariableStatement(
-            undefined,
-            tsModule.createVariableDeclarationList(
-              [
-                tsModule.createVariableDeclaration(
-                  tsModule.createIdentifier(node.name.getText()),
-                  undefined,
-                  tsModule.createCall(
-                    tsModule.createIdentifier("inject"),
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    node.type ? [tsModule.createKeywordTypeNode(node.type.kind as any)] : undefined,
-                    [injectKeyExpr, ...(defaultValueExpr ? [defaultValueExpr] : [])]
-                  )
-                ),
-              ],
-              tsModule.NodeFlags.Const
-            )
-          ),
-          node
-        ),
-      ] as ts.Statement[],
+      nodes: [$t.copySyntheticComments(injectConstStatement, node)] as ts.Statement[],
     };
   }
 

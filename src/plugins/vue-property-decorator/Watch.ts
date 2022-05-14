@@ -1,6 +1,6 @@
 import { ASTConverter, ASTResultKind, ReferenceKind } from "../types";
 import type ts from "typescript";
-import { copySyntheticComments, createIdentifier } from "../../utils";
+import { TsHelper } from "../../helpers/TsHelper";
 
 const watchDecoratorName = "Watch";
 
@@ -12,54 +12,38 @@ export const convertWatch: ASTConverter<ts.MethodDeclaration> = (node, options) 
     (el) => (el.expression as ts.CallExpression).expression.getText() === watchDecoratorName
   );
   if (decorator) {
-    const tsModule = options.typescript;
+    const $t = new TsHelper(options);
     const decoratorArguments = (decorator.expression as ts.CallExpression).arguments;
     if (decoratorArguments.length > 1) {
       const keyName = (decoratorArguments[0] as ts.StringLiteral).text;
       const watchArguments = decoratorArguments[1];
-      const method = tsModule.createArrowFunction(
-        node.modifiers,
-        node.typeParameters,
-        node.parameters,
-        node.type,
-        tsModule.createToken(tsModule.SyntaxKind.EqualsGreaterThanToken),
-        node.body ?? tsModule.createBlock([], false)
-      );
+
+      const method = $t.createArrowFunctionFromNode(node);
+
       const watchOptions: ts.PropertyAssignment[] = [];
-      if (tsModule.isObjectLiteralExpression(watchArguments)) {
+      if ($t.module.isObjectLiteralExpression(watchArguments)) {
         watchArguments.properties.forEach((el) => {
-          if (!tsModule.isPropertyAssignment(el)) return;
+          if (!$t.module.isPropertyAssignment(el)) return;
           watchOptions.push(el);
         });
       }
 
+      const thisPropertyAccess = $t.createPropertyAccess(
+        $t.factory.createThis(),
+        $t.factory.createIdentifier(keyName)
+      );
+      const watchArgs = $t.factory.createObjectLiteralExpression(watchOptions);
+      const watchArgsArray = [thisPropertyAccess, method, watchArgs];
+      const watchExprStatement = $t.createExpressionStatement("watch", undefined, watchArgsArray);
+      const watchExprWithComments = $t.copySyntheticComments(watchExprStatement, node);
+
       return {
         tag: "Watch",
         kind: ASTResultKind.COMPOSITION,
-        imports: [
-          {
-            named: ["watch"],
-            external: options.compatible ? "@vue/composition-api" : "vue",
-          },
-        ],
+        imports: $t.namedImports(["watch"]),
         reference: ReferenceKind.VARIABLE,
         attributes: [keyName],
-        nodes: [
-          tsModule.createExpressionStatement(
-            copySyntheticComments(
-              tsModule,
-              tsModule.createCall(tsModule.createIdentifier("watch"), undefined, [
-                tsModule.createPropertyAccess(
-                  tsModule.createThis(),
-                  createIdentifier(tsModule, keyName)
-                ),
-                method,
-                tsModule.createObjectLiteral(watchOptions),
-              ]),
-              node
-            )
-          ),
-        ] as ts.Statement[],
+        nodes: [watchExprWithComments] as ts.ExpressionStatement[],
       };
     }
   }

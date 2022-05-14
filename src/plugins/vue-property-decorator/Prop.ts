@@ -6,7 +6,7 @@ import {
   ReferenceKind,
 } from "../types";
 import ts from "typescript";
-import { copySyntheticComments } from "../../utils";
+import { TsHelper } from "../../helpers/TsHelper";
 
 const propDecoratorName = "Prop";
 
@@ -19,7 +19,7 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
   );
   if (decorator) {
     const propType = "PropType";
-    const tsModule = options.typescript;
+    const $t = new TsHelper(options);
     const type = node.type?.kind;
     const decoratorArguments = (decorator.expression as ts.CallExpression).arguments;
     const hasKnowableType =
@@ -34,39 +34,30 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
       const propArguments = decoratorArguments[0] as ts.ObjectLiteralExpression;
       const props = propArguments.properties.reduce((accumulator, property) => {
         if (property.kind === ts.SyntaxKind.PropertyAssignment) {
+          let initializer: ts.AsExpression = property.initializer as ts.AsExpression;
           if (node.type && property.name.getText() === "type") {
-            const typeReference = ts.createTypeReferenceNode(propType, [node.type]);
-            property.initializer = tsModule.createAsExpression(property.initializer, typeReference);
+            const typeReference = $t.factory.createTypeReferenceNode(propType, [node.type]);
+            initializer = $t.factory.createAsExpression(property.initializer, typeReference);
             addedPropKey = true;
           }
 
-          accumulator.push(property);
+          const newProperty = $t.factory.createPropertyAssignment(property.name, initializer);
+          accumulator.push(newProperty);
         }
 
         return accumulator;
       }, [] as ts.ObjectLiteralElementLike[]);
 
-      const args = tsModule.createObjectLiteral(props);
+      const args = $t.factory.createObjectLiteralExpression(props);
 
       return {
         tag: "Prop",
         kind: ASTResultKind.COMPOSITION,
-        imports: addedPropKey
-          ? [
-              {
-                named: [propType],
-                external: options.compatible ? "@vue/composition-api" : "vue",
-              },
-            ]
-          : [],
+        imports: addedPropKey ? $t.namedImports([propType]) : [],
         reference: ReferenceKind.PROPS,
         attributes: [propName],
         nodes: [
-          copySyntheticComments(
-            tsModule,
-            tsModule.createPropertyAssignment(tsModule.createIdentifier(propName), args),
-            node
-          ),
+          $t.copySyntheticComments($t.factory.createPropertyAssignment(propName, args), node),
         ],
       };
     }
@@ -76,7 +67,7 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
 };
 
 export const mergeProps: ASTTransform = (astResults, options) => {
-  const tsModule = options.typescript;
+  const $t = new TsHelper(options);
   const propTags = ["Prop", "Model"];
 
   const propASTResults = astResults.filter((el) => propTags.includes(el.tag));
@@ -93,17 +84,11 @@ export const mergeProps: ASTTransform = (astResults, options) => {
       .map((el) => el.attributes)
       .reduce((array, el) => array.concat(el), []),
     nodes: [
-      tsModule.createPropertyAssignment(
-        tsModule.createIdentifier("props"),
-        tsModule.createObjectLiteral(
-          [
-            ...propASTResults
-              .map((el) => (el.tag === "Prop" ? el.nodes : [el.nodes[1]]))
-              .reduce((array, el) => array.concat(el), [] as ts.ObjectLiteralElementLike[]),
-          ] as ts.ObjectLiteralElementLike[],
-          true
-        )
-      ),
+      $t.createObjectPropertyAssignment("props", [
+        ...propASTResults
+          .map((el) => (el.tag === "Prop" ? el.nodes : [el.nodes[1]]))
+          .reduce((array, el) => array.concat(el), [] as ts.ObjectLiteralElementLike[]),
+      ] as ts.ObjectLiteralElementLike[]),
     ],
   };
 

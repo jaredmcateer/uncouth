@@ -1,9 +1,9 @@
 import { ASTTransform, ASTResult, ReferenceKind, ASTResultKind } from "./types";
 import ts from "typescript";
-import { addTodoComment } from "../utils";
+import { TsHelper } from "../helpers/TsHelper";
 
 export const changeContextAndSort: ASTTransform = (astResults, options) => {
-  const tsModule = options.typescript;
+  const $t = new TsHelper(options);
   const getReferences = (reference: ReferenceKind) =>
     astResults
       .filter((el) => el.reference === reference)
@@ -34,77 +34,51 @@ export const changeContextAndSort: ASTTransform = (astResults, options) => {
   const transformer: () => ts.TransformerFactory<ts.Node> = () => {
     return (context) => {
       const changeContext: ts.Visitor = (node) => {
-        if (tsModule.isPropertyAccessExpression(node)) {
+        if ($t.module.isPropertyAccessExpression(node)) {
           const propertyName = node.name.text;
 
-          if (node.expression.kind === tsModule.SyntaxKind.ThisKeyword) {
+          if (node.expression.kind === $t.module.SyntaxKind.ThisKeyword) {
             if (refVariables.includes(propertyName)) {
               dependents.push(propertyName);
-              return tsModule.createPropertyAccess(
-                tsModule.createIdentifier(propertyName),
-                tsModule.createIdentifier("value")
-              );
+              return $t.createPropertyAccess(propertyName, "value");
             } else if (domRefVariables.includes(propertyName)) {
               dependents.push(propertyName);
-              return tsModule.createNonNullExpression(
-                tsModule.createPropertyAccess(
-                  tsModule.createIdentifier(propertyName),
-                  tsModule.createIdentifier("value")
-                )
-              );
+              return $t.createNonNullPropertyAccess(propertyName, "value");
             } else if (propVariables.includes(propertyName)) {
               dependents.push(propertyName);
-              return tsModule.createPropertyAccess(
-                tsModule.createIdentifier(options.setupPropsKey),
-                tsModule.createIdentifier(propertyName)
-              );
+              return $t.createPropertyAccess(options.setupPropsKey, propertyName);
             } else if (variables.includes(propertyName)) {
               dependents.push(propertyName);
-              return tsModule.createIdentifier(propertyName);
+              return $t.factory.createIdentifier(propertyName);
             } else {
               const convertKey = convertContextKey(propertyName);
               if (convertKey) {
-                return tsModule.createPropertyAccess(
-                  tsModule.createIdentifier(options.setupContextKey),
-                  tsModule.createIdentifier(convertKey)
-                );
+                return $t.createPropertyAccess(options.setupContextKey, convertKey);
               }
 
-              return addTodoComment(
-                tsModule,
-                tsModule.createPropertyAccess(
-                  tsModule.createPropertyAccess(
-                    tsModule.createIdentifier(options.setupContextKey),
-                    tsModule.createIdentifier("root")
-                  ),
-                  tsModule.createIdentifier(propertyName)
-                ),
-                "Check this convert result, it can work well in 80% case.",
-                true
-              );
+              const fallbackRoot = $t.createPropertyAccess(options.setupContextKey, "root");
+              const fallback = $t.createPropertyAccess(fallbackRoot, propertyName);
+              const comment = "Check this convert result, it can work well in 80% of cases.";
+
+              return $t.addTodoComment(fallback, comment, true);
             }
           } else if (templateRefVariables.includes(propertyName)) {
             const refPropAccess = node
               .getChildren()
               .find((child): child is ts.PropertyAccessExpression => {
-                return tsModule.isPropertyAccessExpression(child);
+                return $t.module.isPropertyAccessExpression(child);
               });
 
             if (refPropAccess?.name.getText() === "$refs") {
-              return tsModule.createNonNullExpression(
-                tsModule.createPropertyAccess(
-                  tsModule.createIdentifier(propertyName),
-                  tsModule.createIdentifier("value")
-                )
-              );
+              return $t.createNonNullPropertyAccess(propertyName, "value");
             }
           }
-          return tsModule.visitEachChild(node, changeContext, context);
+          return $t.module.visitEachChild(node, changeContext, context);
         }
-        return tsModule.visitEachChild(node, changeContext, context);
+        return $t.module.visitEachChild(node, changeContext, context);
       };
 
-      return (node) => tsModule.visitNode(node, changeContext);
+      return (node) => $t.module.visitNode(node, changeContext);
     };
   };
 
@@ -116,8 +90,8 @@ export const changeContextAndSort: ASTTransform = (astResults, options) => {
       };
     }
     dependents = [];
-    const nodes = tsModule.transform(astResult.nodes, [transformer()], {
-      module: tsModule.ModuleKind.ESNext,
+    const nodes = $t.module.transform(astResult.nodes, [transformer()], {
+      module: $t.module.ModuleKind.ESNext,
     }).transformed;
 
     const nodeDependents = dependents.slice();
@@ -135,6 +109,7 @@ export const changeContextAndSort: ASTTransform = (astResults, options) => {
   const resultHaveDependents = astResultNoDependents
     .map((el) => el.attributes)
     .reduce((array, el) => array.concat(el), []);
+
   do {
     let hasPush = false;
     otherASTResults = otherASTResults.filter((el) => {

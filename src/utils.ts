@@ -173,8 +173,12 @@ export function convertNodeToASTResult<T extends ts.Node>(
 
 // ts.createIdentifier() cannot call getText function, it's a hack.
 export function createIdentifier(tsModule: typeof ts, text: string): ts.Identifier {
-  const temp = tsModule.createIdentifier(text);
+  const temp = tsModule.factory.createIdentifier(text);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   temp.getText = () => text;
   return temp;
+}
+
+export function isString(val: any): val is string {
+  return typeof val === "string";
 }
