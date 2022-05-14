@@ -11,16 +11,15 @@ exports[`testTSFile compatible 1`] = `
   onBeforeUnmount,
   onUnmounted,
   watch,
-  onMounted
-} from '@vue/composition-api'
-
+  onMounted,
+} from \\"@vue/composition-api\\";
 /**
  * My basic tag
  */
 export default defineComponent({
   model: {
-    prop: 'checked',
-    event: 'change'
+    prop: \\"checked\\",
+    event: \\"change\\",
   },
   props: {
     bar: String,
@@ -30,104 +29,88 @@ export default defineComponent({
      */
     foo: { type: Boolean, default: false },
     bar: { type: Number as PropType<number>, default: 1 },
-    foobar: { type: Object as PropType<CustomType> }
+    foobar: { type: Object as PropType<CustomType> },
   },
-  name: 'oao',
+  name: \\"oao\\",
   setup(props, context) {
     /**
      * My count
      */
     const count = computed(() => {
-      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ context.root
-        .$store.state.count
-    })
-
+      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ context
+        .root.$store.state.count;
+    });
     const { a } = (() => {
-      const a = 'pa'
-
+      const a = \\"pa\\";
       return toRefs(
         reactive({
-          a: a
+          a: a,
         })
-      )
-    })()
-
-    const anotherComponent = ref<HTMLElement>(null)
-
+      );
+    })();
+    const anotherComponent = ref<HTMLElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
-      ref<HTMLDivElement>(null)
-
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(null)
-
+      ref<HTMLDivElement>(null);
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
+      ref(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent =
-      ref<MyComponent>(null)
-
+      ref<MyComponent>(null);
     /**
      * My msg
      */
-    const msg = ref('Vetur means \\"Winter\\" in icelandic.') // foo
-
+    const msg = ref('Vetur means \\"Winter\\" in icelandic.'); // foo
     const onMsgChanged = (val: string, newVal: string) => {
-      console.log(val, newVal)
-    }
-
+      console.log(val, newVal);
+    };
     onBeforeUnmount(() => {
-      context.emit('tearing down')
-    })
+      context.emit(\\"tearing down\\");
+    });
     onUnmounted(() => {
-      console.log('destroyed')
-    })
-
+      console.log(\\"destroyed\\");
+    });
     const click = (c: string) => {
-      context.emit('click', c)
-    }
-
+      context.emit(\\"click\\", c);
+    };
     const refAccess = () => {
-      const foo = { myDiv: true }
-
-      foo.myDiv = false // should not transform
-      myDiv.value!.focus()
-      mySpan.value!.innerText = 'foo'
-      myComponent.value!.vm.doSomething()
-    }
-
+      const foo = { myDiv: true };
+      foo.myDiv = false; // should not transform
+      myDiv.value!.focus();
+      mySpan.value!.innerText = \\"foo\\";
+      myComponent.value!.vm.doSomething();
+    };
     const value = computed({
       get: () => {
-        return props.checked
+        return props.checked;
       },
       set: (value: boolean) => {
-        context.emit('change', value)
-      }
-    })
-
+        context.emit(\\"change\\", value);
+      },
+    });
     watch(
       props.checked,
       (val: boolean, newVal: boolean) => {
-        console.log(val, newVal)
-        console.log(anotherComponent.value!)
+        console.log(val, newVal);
+        console.log(anotherComponent.value!);
       },
       { deep: true, immediate: true }
-    )
+    );
     onMounted(() => {
-      click('oao')
-    })
-
+      click(\\"oao\\");
+    });
     const removeItem = () => {
       if (props.foo > 10) {
-        context.emit('remove-item', 10)
+        context.emit(\\"remove-item\\", 10);
       } else {
-        context.emit('remove-item', props.foo)
+        context.emit(\\"remove-item\\", props.foo);
       }
-    }
-
+    };
     /**
      * My greeting
      */
     const hello = () => {
-      console.log(msg.value)
-    }
-
-    removeItem()
+      console.log(msg.value);
+    };
+    removeItem();
     // TODO: Please remove unused return variable
     return {
       count,
@@ -146,10 +129,10 @@ export default defineComponent({
       checked,
       onMounted,
       removeItem,
-      hello
-    }
-  }
-})
+      hello,
+    };
+  },
+});
 "
 `;
 
@@ -166,16 +149,15 @@ exports[`testTSFile compatible and ts config file: stdout 1`] = `
   onBeforeUnmount,
   onUnmounted,
   watch,
-  onMounted
-} from '@vue/composition-api'
-
+  onMounted,
+} from \\"@vue/composition-api\\";
 /**
  * My basic tag
  */
 export default defineComponent({
   model: {
-    prop: 'checked',
-    event: 'change'
+    prop: \\"checked\\",
+    event: \\"change\\",
   },
   props: {
     bar: String,
@@ -185,104 +167,88 @@ export default defineComponent({
      */
     foo: { type: Boolean, default: false },
     bar: { type: Number as PropType<number>, default: 1 },
-    foobar: { type: Object as PropType<CustomType> }
+    foobar: { type: Object as PropType<CustomType> },
   },
-  name: 'oao',
+  name: \\"oao\\",
   setup(props, ctx) {
     /**
      * My count
      */
     const count = computed(() => {
-      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ ctx.root.$store
-        .state.count
-    })
-
+      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ ctx
+        .root.$store.state.count;
+    });
     const { a } = (() => {
-      const a = 'pa'
-
+      const a = \\"pa\\";
       return toRefs(
         reactive({
-          a: a
+          a: a,
         })
-      )
-    })()
-
-    const anotherComponent = ref<HTMLElement>(null)
-
+      );
+    })();
+    const anotherComponent = ref<HTMLElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
-      ref<HTMLDivElement>(null)
-
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(null)
-
+      ref<HTMLDivElement>(null);
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
+      ref(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent =
-      ref<MyComponent>(null)
-
+      ref<MyComponent>(null);
     /**
      * My msg
      */
-    const msg = ref('Vetur means \\"Winter\\" in icelandic.') // foo
-
+    const msg = ref('Vetur means \\"Winter\\" in icelandic.'); // foo
     const onMsgChanged = (val: string, newVal: string) => {
-      console.log(val, newVal)
-    }
-
+      console.log(val, newVal);
+    };
     onBeforeUnmount(() => {
-      ctx.emit('tearing down')
-    })
+      ctx.emit(\\"tearing down\\");
+    });
     onUnmounted(() => {
-      console.log('destroyed')
-    })
-
+      console.log(\\"destroyed\\");
+    });
     const click = (c: string) => {
-      context.emit('click', c)
-    }
-
+      context.emit(\\"click\\", c);
+    };
     const refAccess = () => {
-      const foo = { myDiv: true }
-
-      foo.myDiv = false // should not transform
-      myDiv.value!.focus()
-      mySpan.value!.innerText = 'foo'
-      myComponent.value!.vm.doSomething()
-    }
-
+      const foo = { myDiv: true };
+      foo.myDiv = false; // should not transform
+      myDiv.value!.focus();
+      mySpan.value!.innerText = \\"foo\\";
+      myComponent.value!.vm.doSomething();
+    };
     const value = computed({
       get: () => {
-        return props.checked
+        return props.checked;
       },
       set: (value: boolean) => {
-        ctx.emit('change', value)
-      }
-    })
-
+        ctx.emit(\\"change\\", value);
+      },
+    });
     watch(
       props.checked,
       (val: boolean, newVal: boolean) => {
-        console.log(val, newVal)
-        console.log(anotherComponent.value!)
+        console.log(val, newVal);
+        console.log(anotherComponent.value!);
       },
       { deep: true, immediate: true }
-    )
+    );
     onMounted(() => {
-      click('oao')
-    })
-
+      click(\\"oao\\");
+    });
     const removeItem = () => {
       if (props.foo > 10) {
-        context.emit('remove-item', 10)
+        context.emit(\\"remove-item\\", 10);
       } else {
-        context.emit('remove-item', props.foo)
+        context.emit(\\"remove-item\\", props.foo);
       }
-    }
-
+    };
     /**
      * My greeting
      */
     const hello = () => {
-      console.log(msg.value)
-    }
-
-    removeItem()
+      console.log(msg.value);
+    };
+    removeItem();
     // TODO: Please remove unused return variable
     return {
       count,
@@ -301,10 +267,10 @@ export default defineComponent({
       checked,
       onMounted,
       removeItem,
-      hello
-    }
-  }
-})
+      hello,
+    };
+  },
+});
 
 "
 `;
@@ -320,16 +286,15 @@ exports[`testTSFile no compatible 1`] = `
   onBeforeUnmount,
   onUnmounted,
   watch,
-  onMounted
-} from 'vue'
-
+  onMounted,
+} from \\"vue\\";
 /**
  * My basic tag
  */
 export default defineComponent({
   model: {
-    prop: 'checked',
-    event: 'change'
+    prop: \\"checked\\",
+    event: \\"change\\",
   },
   props: {
     bar: String,
@@ -339,104 +304,88 @@ export default defineComponent({
      */
     foo: { type: Boolean, default: false },
     bar: { type: Number as PropType<number>, default: 1 },
-    foobar: { type: Object as PropType<CustomType> }
+    foobar: { type: Object as PropType<CustomType> },
   },
-  name: 'oao',
+  name: \\"oao\\",
   setup(props, context) {
     /**
      * My count
      */
     const count = computed(() => {
-      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ context.root
-        .$store.state.count
-    })
-
+      return /* TODO: Check this convert result, it can work well in 80% of cases.*/ context
+        .root.$store.state.count;
+    });
     const { a } = (() => {
-      const a = 'pa'
-
+      const a = \\"pa\\";
       return toRefs(
         reactive({
-          a: a
+          a: a,
         })
-      )
-    })()
-
-    const anotherComponent = ref<HTMLElement>(null)
-
+      );
+    })();
+    const anotherComponent = ref<HTMLElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
-      ref<HTMLDivElement>(null)
-
-    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan = ref(null)
-
+      ref<HTMLDivElement>(null);
+    /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
+      ref(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myComponent =
-      ref<MyComponent>(null)
-
+      ref<MyComponent>(null);
     /**
      * My msg
      */
-    const msg = ref('Vetur means \\"Winter\\" in icelandic.') // foo
-
+    const msg = ref('Vetur means \\"Winter\\" in icelandic.'); // foo
     const onMsgChanged = (val: string, newVal: string) => {
-      console.log(val, newVal)
-    }
-
+      console.log(val, newVal);
+    };
     onBeforeUnmount(() => {
-      context.emit('tearing down')
-    })
+      context.emit(\\"tearing down\\");
+    });
     onUnmounted(() => {
-      console.log('destroyed')
-    })
-
+      console.log(\\"destroyed\\");
+    });
     const click = (c: string) => {
-      context.emit('click', c)
-    }
-
+      context.emit(\\"click\\", c);
+    };
     const refAccess = () => {
-      const foo = { myDiv: true }
-
-      foo.myDiv = false // should not transform
-      myDiv.value!.focus()
-      mySpan.value!.innerText = 'foo'
-      myComponent.value!.vm.doSomething()
-    }
-
+      const foo = { myDiv: true };
+      foo.myDiv = false; // should not transform
+      myDiv.value!.focus();
+      mySpan.value!.innerText = \\"foo\\";
+      myComponent.value!.vm.doSomething();
+    };
     const value = computed({
       get: () => {
-        return props.checked
+        return props.checked;
       },
       set: (value: boolean) => {
-        context.emit('change', value)
-      }
-    })
-
+        context.emit(\\"change\\", value);
+      },
+    });
     watch(
       props.checked,
       (val: boolean, newVal: boolean) => {
-        console.log(val, newVal)
-        console.log(anotherComponent.value!)
+        console.log(val, newVal);
+        console.log(anotherComponent.value!);
       },
       { deep: true, immediate: true }
-    )
+    );
     onMounted(() => {
-      click('oao')
-    })
-
+      click(\\"oao\\");
+    });
     const removeItem = () => {
       if (props.foo > 10) {
-        context.emit('remove-item', 10)
+        context.emit(\\"remove-item\\", 10);
       } else {
-        context.emit('remove-item', props.foo)
+        context.emit(\\"remove-item\\", props.foo);
       }
-    }
-
+    };
     /**
      * My greeting
      */
     const hello = () => {
-      console.log(msg.value)
-    }
-
-    removeItem()
+      console.log(msg.value);
+    };
+    removeItem();
     // TODO: Please remove unused return variable
     return {
       count,
@@ -455,9 +404,9 @@ export default defineComponent({
       checked,
       onMounted,
       removeItem,
-      hello
-    }
-  }
-})
+      hello,
+    };
+  },
+});
 "
 `;

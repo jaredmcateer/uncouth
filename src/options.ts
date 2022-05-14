@@ -11,7 +11,7 @@ export interface UncouthOptions {
   setupContextKey: string;
   typescript: typeof ts;
   vueTemplateCompiler: typeof vueTemplateCompiler;
-  eslintConfigFile: string;
+  prettierConfig: string;
   plugins: ASTConvertPlugins;
 }
 
@@ -26,7 +26,7 @@ export function getDefaultUncouthOptions(tsModule: typeof ts = ts): UncouthOptio
     setupContextKey: "context",
     typescript: tsModule,
     vueTemplateCompiler: vueTemplateCompiler,
-    eslintConfigFile: ".eslintrc.js",
+    prettierConfig: ".prettierrc",
     plugins: getDefaultPlugins(tsModule),
   };
 }
