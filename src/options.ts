@@ -12,6 +12,7 @@ export interface UncouthOptions {
   typescript: typeof ts;
   vueTemplateCompiler: typeof vueTemplateCompiler;
   prettierConfig: string;
+  vuexKey: string;
   plugins: ASTConvertPlugins;
 }
 
@@ -28,6 +29,7 @@ export function getDefaultUncouthOptions(tsModule: typeof ts = ts): UncouthOptio
     vueTemplateCompiler: vueTemplateCompiler,
     prettierConfig: ".prettierrc",
     plugins: getDefaultPlugins(tsModule),
+    vuexKey: "store",
   };
 }
 

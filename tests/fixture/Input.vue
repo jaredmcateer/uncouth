@@ -5,6 +5,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Prop, Component, Ref, Model, Provide, Inject } from "vue-property-decorator";
+import { Action } from "vuex-class";
 import MyComponent from "my-component.vue";
 
 const symbol = Symbol("baz");
@@ -39,6 +40,15 @@ export default class BasicPropertyClass extends Vue {
   @Inject("bar") readonly bari!: string;
   @Inject({ from: "optional", default: "default" }) readonly optional!: string;
   @Inject(symbol) readonly bazi!: string;
+
+  @Action() actA;
+  // hmm all actions are promises.
+  @Action() actB: (str: string) => number;
+  @Action() actC: (val: "foo" | "bar") => Promise<number>;
+  @Action("namespace/actD") actD;
+  @Action("namespace/actE") actE: (val: "foo" | "bar") => Promise<number>;
+  @Action(actF) actionEff;
+  @Action(actG) actuhGee: (val: "foo" | "bar") => Promise<number>;
 
   $refs!: {
     myDiv: HTMLDivElement;

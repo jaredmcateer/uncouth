@@ -3,7 +3,6 @@
 exports[`testVueFile compatible 1`] = `
 "import MyComponent from \\"my-component.vue\\";
 import {
-  defineComponent,
   computed,
   PropType,
   reactive,
@@ -13,7 +12,9 @@ import {
   inject,
   onBeforeUnmount,
   onUnmounted,
+  defineComponent,
 } from \\"@vue/composition-api\\";
+import { useStore } from \\"vuex\\";
 const symbol = Symbol(\\"baz\\");
 /**
  * My basic tag
@@ -37,6 +38,7 @@ export default defineComponent({
   },
   name: \\"oao\\",
   setup(props, context) {
+    const store = useStore();
     /**
      * My count
      */
@@ -59,6 +61,31 @@ export default defineComponent({
     const bari = inject<string>(\\"bar\\");
     const optional = inject<string>(\\"optional\\", \\"default\\");
     const bazi = inject<string>(symbol);
+    /* TODO: check function dispatch call signature is correct*/ const actA =
+      async (arg: unknown): Promise<unknown> => {
+        return await store.dispatch(\\"actA\\", arg);
+      };
+    // hmm all actions are promises.
+    const actB = async (str: string): Promise<number> => {
+      return await store.dispatch(\\"actB\\", str);
+    };
+    const actC = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return await store.dispatch(\\"actC\\", val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const actD =
+      async (arg: unknown): Promise<unknown> => {
+        return await store.dispatch(\\"namespace/actD\\", arg);
+      };
+    const actE = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return await store.dispatch(\\"namespace/actE\\", val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const actionEff =
+      async (arg: unknown): Promise<unknown> => {
+        return await store.dispatch(actF, arg);
+      };
+    const actuhGee = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return await store.dispatch(actG, val);
+    };
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
@@ -97,6 +124,13 @@ export default defineComponent({
       bari,
       optional,
       bazi,
+      actA,
+      actB,
+      actC,
+      actD,
+      actE,
+      actionEff,
+      actuhGee,
       myDiv,
       mySpan,
       myComponent,
@@ -125,6 +159,7 @@ import {
   onBeforeUnmount,
   onUnmounted,
 } from \\"vue\\";
+import { useStore } from \\"vuex\\";
 const symbol = Symbol(\\"baz\\");
 /**
  * My basic tag
@@ -148,6 +183,7 @@ export default defineComponent({
   },
   name: \\"oao\\",
   setup(props, context) {
+    const store = useStore();
     /**
      * My count
      */
@@ -170,6 +206,31 @@ export default defineComponent({
     const bari = inject<string>(\\"bar\\");
     const optional = inject<string>(\\"optional\\", \\"default\\");
     const bazi = inject<string>(symbol);
+    /* TODO: check function dispatch call signature is correct*/ const actA =
+      async (arg: unknown): Promise<unknown> => {
+        return await store.dispatch(\\"actA\\", arg);
+      };
+    // hmm all actions are promises.
+    const actB = async (str: string): Promise<number> => {
+      return await store.dispatch(\\"actB\\", str);
+    };
+    const actC = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return await store.dispatch(\\"actC\\", val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const actD =
+      async (arg: unknown): Promise<unknown> => {
+        return await store.dispatch(\\"namespace/actD\\", arg);
+      };
+    const actE = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return await store.dispatch(\\"namespace/actE\\", val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const actionEff =
+      async (arg: unknown): Promise<unknown> => {
+        return await store.dispatch(actF, arg);
+      };
+    const actuhGee = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return await store.dispatch(actG, val);
+    };
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
@@ -208,6 +269,13 @@ export default defineComponent({
       bari,
       optional,
       bazi,
+      actA,
+      actB,
+      actC,
+      actD,
+      actE,
+      actionEff,
+      actuhGee,
       myDiv,
       mySpan,
       myComponent,

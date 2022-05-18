@@ -22,6 +22,7 @@ import { convertInject } from "./vue-property-decorator/Inject";
 import { convertProvide } from "./vue-property-decorator/Provide";
 import { convertTemplateRef } from "./vue-class-component/TemplateRef";
 import { TsHelper } from "../helpers/TsHelper";
+import { convertAction } from "./vuex-class/Action";
 
 export function getDefaultPlugins(tsModule: typeof ts): ASTConvertPlugins {
   return {
@@ -41,6 +42,7 @@ export function getDefaultPlugins(tsModule: typeof ts): ASTConvertPlugins {
       convertInject,
       convertData,
       convertTemplateRef,
+      convertAction,
     ],
     [tsModule.SyntaxKind.GetAccessor]: [convertGetter],
     [tsModule.SyntaxKind.SetAccessor]: [convertSetter],
@@ -132,6 +134,8 @@ export function convertASTResultToSetupFn(
 ): ts.MethodDeclaration {
   const $t = new TsHelper(options);
 
+  const composables = getComposables(astResults, $t);
+
   const returnStatement = $t.addTodoComment(
     $t.factory.createReturnStatement(
       $t.factory.createObjectLiteralExpression([
@@ -149,6 +153,7 @@ export function convertASTResultToSetupFn(
     "setup",
     [options.setupPropsKey, options.setupContextKey],
     [
+      ...composables,
       ...(astResults
         .filter((el) => el.kind === ASTResultKind.COMPOSITION)
         .map((el) => el.nodes)
@@ -158,15 +163,74 @@ export function convertASTResultToSetupFn(
   );
 }
 
+interface Clause {
+  named: Set<string>;
+  default?: string;
+  params?: ts.Expression[];
+}
+
+function getComposables(astResults: ASTResult<ts.Node>[], $t: TsHelper): ts.VariableStatement[] {
+  const composableMap = new Map<string, Clause>();
+  astResults.forEach((result) => {
+    if (!result.composables) return;
+
+    result.composables.forEach((info) => {
+      const func = info.func;
+      const tmp: Clause = composableMap.get(func) ?? { named: new Set() };
+
+      if (!("default" in tmp) && "default" in info) {
+        tmp.default = info.default;
+      }
+
+      if ("params" in info) {
+        tmp.params = info.params;
+      }
+
+      if ("named" in info) {
+        info.named?.forEach((name) => tmp.named.add(name));
+      }
+
+      composableMap.set(func, tmp);
+    });
+  });
+
+  const composables = Array.from(composableMap)
+    .map(([func, clause]) => {
+      const funcExpr = $t.createCallExpression(func, undefined, clause.params);
+      const statements: ts.VariableStatement[] = [];
+      if (clause.default) {
+        statements.push($t.createConstStatement(clause.default, funcExpr));
+      } else {
+        const u = undefined;
+        const importElements = [...clause.named].map((name) =>
+          $t.factory.createBindingElement(u, u, $t.factory.createIdentifier(name))
+        );
+
+        if (importElements.length > 0) {
+          const vars = $t.factory.createObjectBindingPattern(importElements);
+          const boundElementsDeclaration = $t.factory.createVariableDeclaration(
+            vars,
+            u,
+            u,
+            funcExpr
+          );
+          const varDecList = $t.factory.createVariableDeclarationList([boundElementsDeclaration]);
+          statements.push($t.factory.createVariableStatement(u, varDecList));
+        }
+      }
+
+      return statements;
+    })
+    .flat()
+    .filter((composable): composable is ts.VariableStatement => !!composable);
+
+  return composables;
+}
+
 export function convertASTResultToImport(
   astResults: ASTResult<ts.Node>[],
   options: UncouthOptions
 ): ts.ImportDeclaration[] {
-  interface Clause {
-    named: Set<string>;
-    default?: string;
-  }
-
   const $t = new TsHelper(options);
 
   const importMap = new Map<string, Clause>();
@@ -177,10 +241,15 @@ export function convertASTResultToImport(
       if (!("default" in temp) && "default" in importInfo) {
         temp.default = importInfo.default;
       }
-      temp.named.add("defineComponent");
+
+      if (key === "vue") {
+        temp.named.add("defineComponent");
+      }
+
       for (const named of importInfo.named || []) {
         temp.named.add(named);
       }
+
       importMap.set(key, temp);
     }
   }

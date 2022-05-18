@@ -26,6 +26,11 @@ export default class BasicPropertyClass extends Vue {
   @Prop({ type: Number, default: 1 }) bar: number;
   @Prop({ type: Object }) foobar: CustomType;
 
+  @Action() actA;
+  @Action("namespace/actD") actD;
+  @Action("namespace/actE") actE: (val: "foo" | "bar") => Promise<number>;
+  @Action(actG) actuhGee: (val: "foo" | "bar") => Promise<number>;
+
   $refs!: {
     myDiv: HTMLDivElement;
     mySpan;
