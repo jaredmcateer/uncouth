@@ -58,6 +58,16 @@ The files to be converted must meet the criteria below:
   - [ ] `@ProvideReactive / @InjectReactive`
   - [x] `@Emit`
   - [x] `@Ref`
+- vuex-class
+  - [x] `@Action`
+  - [ ] `@Getter`
+  - [ ] `@Mutation`
+  - [ ] `@State`
+  - `@<namespace>`
+    - [ ] `.Action`
+    - [ ] `.Getter`
+    - [ ] `.Mutation`
+    - [ ] `.State`
 - [x] replace `this` to `props`, `variable`, or `context`.
 - [x] sort by dependency.
 
