@@ -1,5 +1,6 @@
 import Vue from "vue";
 import { Prop, Component, Ref, Model, Watch, Emit } from "vue-property-decorator";
+import { Action, Getter, Mutation, State } from "vuex-class";
 
 /**
  * My basic tag
@@ -25,6 +26,26 @@ export default class BasicPropertyClass extends Vue {
   @Prop({ type: Boolean, default: false }) foo!;
   @Prop({ type: Number, default: 1 }) bar: number;
   @Prop({ type: Object }) foobar: CustomType;
+
+  @Action() actA;
+  @Action("namespace/actD") actD;
+  @Action("namespace/actE") actE: (val: "foo" | "bar") => Promise<number>;
+  @Action(actG) actuhGee: (val: "foo" | "bar") => Promise<number>;
+
+  @Mutation() mutateA;
+  @Mutation("namespace/mutateB") mutateB;
+  @Mutation("namespace/mutateE") mutateE: (val: "foo" | "bar") => number;
+  @Mutation(mutateG) mGee: (val: "foo" | "bar") => number;
+
+  @Getter() getA;
+  @Getter() getB: number;
+  @Getter("namespace/getC") getTheC;
+  @Getter(cGetG) getTheG: number;
+
+  @State() stateA;
+  @State() stateB: number;
+  @State("namespace/StateC") getStateC: Foo;
+  @State(ns.keys.stateD) stateD: boolean;
 
   $refs!: {
     myDiv: HTMLDivElement;

@@ -96,11 +96,15 @@ export function convertNodeToASTResult<T extends ts.Node>(
     kind: ASTResultKind.OBJECT,
     reference: ReferenceKind.NONE,
     attributes: [],
-    tag: "IheritObjProperty",
+    tag: "InheritObjProperty",
     nodes: [tsHelper.addTodoComment(node, "Can't convert this object property.", false)],
   };
 }
 
 export function isString(val: unknown): val is string {
   return typeof val === "string";
+}
+
+export function isValidIdentifier(identifier: string): boolean {
+  return /^[_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*$/.test(identifier);
 }

@@ -4,7 +4,7 @@ import { runPlugins } from "./plugins";
 import { UncouthOptions } from "./options";
 import { log } from "./debug";
 
-const vueClassModules = ["vue-class-component", "vue-property-decorator"];
+const vueClassModules = ["vue-class-component", "vue-property-decorator", "vuex-class"];
 
 export function convertAST(
   sourceFile: ts.SourceFile,

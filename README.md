@@ -58,6 +58,16 @@ The files to be converted must meet the criteria below:
   - [ ] `@ProvideReactive / @InjectReactive`
   - [x] `@Emit`
   - [x] `@Ref`
+- vuex-class
+  - [x] `@Action`
+  - [x] `@Getter`
+  - [x] `@Mutation`
+  - [x] `@State`
+  - `@<namespace>`
+    - [ ] `.Action`
+    - [ ] `.Getter`
+    - [ ] `.Mutation`
+    - [ ] `.State`
 - [x] replace `this` to `props`, `variable`, or `context`.
 - [x] sort by dependency.
 
@@ -113,24 +123,26 @@ const { file, result } = convertFile(
 
 ```typescript
 {
-  // root path for calc file absolute path, if in CLI, --root value will replace. default:`process.cwd()`
-  root?: string
-  // show debug message. default: `false`
-  debug?: boolean,
-  // if true, use @vue/composition-api. default: `false`
-  compatible?: boolean
-  // first setup function parameter name. default: `props`
-  setupPropsKey?: string
-  // second setup function parameter name. default: `context`
-  setupContextKey?: string
-  // Use custom version typescript. default: Typescript 3.7.3
-  typescript?: typeof ts
-  // Use custom version vue-template-compiler, please match your project vue versions. default: vue-template-compiler 2.6.11
-  vueTemplateCompiler?: typeof vueTemplateCompiler
-  // Use custom prettier config file path. if file does not exist, use default uncouth prettier config.  default: `.prettierrc`
-  prettierConfig?: string
+  // root path for calc file absolute path, if in CLI, --root value will replace.
+  root?: string, // Default:`process.cwd()`
+  // show debug message.
+  debug?: boolean, // Default: `false`
+  // if true, use @vue/composition-api.
+  compatible?: boolean, // Default: `false`
+  // first setup function parameter name.
+  setupPropsKey?: string, // Default: `props`
+  // second setup function parameter name.
+  setupContextKey?: string, // Default: `context`
+  // Use custom version typescript.
+  typescript?: typeof ts, // Default: Typescript 3.7.3
+  // Use custom version vue-template-compiler, please match your project vue versions.
+  vueTemplateCompiler?: typeof vueTemplateCompiler, // Default: vue-template-compiler 2.6.11
+  // Use custom prettier config file path. if file does not exist, use default uncouth prettier config.
+  prettierConfig?: string // Default: `.prettierrc`
   // Use custom ASTConvertPlugins for ASTConvert and ASTTransform
-  plugins?: ASTConvertPlugins
+  plugins?: ASTConvertPlugins,
+  // if using vuex-class the variable name to use for the store
+  vuexKey?: string, // Default: `store`
 }
 ```
 

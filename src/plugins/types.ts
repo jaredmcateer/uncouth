@@ -28,12 +28,24 @@ export type ImportModule =
       external: string;
     };
 
+export type ComposableStatement =
+  | {
+      default?: string;
+      func: string;
+      params?: ts.Expression[];
+    }
+  | {
+      named?: string[];
+      func: string;
+      params?: ts.Expression[];
+    };
 export interface ASTResultBase {
   imports: ImportModule[];
   kind: ASTResultKind;
   reference: ReferenceKind;
   attributes: string[];
   tag: string;
+  composables?: ComposableStatement[];
 }
 
 export interface ASTResultToObject<N = ts.PropertyAssignment> extends ASTResultBase {

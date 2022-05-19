@@ -3,7 +3,6 @@
 exports[`testVueFile compatible 1`] = `
 "import MyComponent from \\"my-component.vue\\";
 import {
-  defineComponent,
   computed,
   PropType,
   reactive,
@@ -13,7 +12,9 @@ import {
   inject,
   onBeforeUnmount,
   onUnmounted,
+  defineComponent,
 } from \\"@vue/composition-api\\";
+import { useStore } from \\"vuex\\";
 const symbol = Symbol(\\"baz\\");
 /**
  * My basic tag
@@ -37,6 +38,7 @@ export default defineComponent({
   },
   name: \\"oao\\",
   setup(props, context) {
+    const store = useStore();
     /**
      * My count
      */
@@ -59,6 +61,91 @@ export default defineComponent({
     const bari = inject<string>(\\"bar\\");
     const optional = inject<string>(\\"optional\\", \\"default\\");
     const bazi = inject<string>(symbol);
+    /* TODO: check function dispatch call signature is correct*/ const actA =
+      async (arg: unknown): Promise<unknown> => {
+        return await store.dispatch(\\"actA\\", arg);
+      };
+    // hmm all actions are promises.
+    const actB = async (str: string): Promise<number> => {
+      return await store.dispatch(\\"actB\\", str);
+    };
+    const actC = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return await store.dispatch(\\"actC\\", val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const actD =
+      async (arg: unknown): Promise<unknown> => {
+        return await store.dispatch(\\"namespace/actD\\", arg);
+      };
+    const actE = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return await store.dispatch(\\"namespace/actE\\", val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const actionEff =
+      async (arg: unknown): Promise<unknown> => {
+        return await store.dispatch(actF, arg);
+      };
+    const actuhGee = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return await store.dispatch(actG, val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const mutateA =
+      (arg: unknown): unknown => {
+        return store.commit(\\"mutateA\\", arg);
+      };
+    const mutateB = (str: string): number => {
+      return store.commit(\\"mutateB\\", str);
+    };
+    const mutateC = (val: \\"foo\\" | \\"bar\\"): number => {
+      return store.commit(\\"mutateC\\", val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const mutateD =
+      (arg: unknown): unknown => {
+        return store.commit(\\"namespace/mutateD\\", arg);
+      };
+    const mutateE = (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return store.commit(\\"namespace/mutateE\\", val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const mEff = (
+      arg: unknown
+    ): unknown => {
+      return store.commit(mutateF, arg);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const mGee = (
+      arg: unknown
+    ): unknown => {
+      return store.commit(mutateG, arg);
+    };
+    const getA = computed(() => {
+      return store.getters.getA;
+    });
+    const getB = computed<number>(() => {
+      return store.getters.getB;
+    });
+    const getC = computed<(str: string) => number>(() => {
+      return store.getters.getC;
+    });
+    const getTheC = computed(() => {
+      return store.getters[\\"namespace/getC\\"];
+    });
+    const getTheD = computed<number>(() => {
+      return store.getters[\\"namespace/getD\\"];
+    });
+    const getTheE = computed(() => {
+      return store.getters.cGetE;
+    });
+    const getTheG = computed<number>(() => {
+      return store.getters.cGetG;
+    });
+    const stateA = computed(() => {
+      return store.state.stateA;
+    });
+    const stateB = computed<number>(() => {
+      return store.state.stateB;
+    });
+    const getStateC = computed<Foo>(() => {
+      return store.state[\\"namespace/StateC\\"];
+    });
+    const stateD = computed<boolean>(() => {
+      return store.state[ns.keys.stateD];
+    });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
@@ -87,6 +174,9 @@ export default defineComponent({
      */
     const hello = () => {
       console.log(msg.value);
+      console.log(actB(\\"foo\\"));
+      console.log(getC.value(\\"bar\\"));
+      console.log(getStateC.value);
     };
     // TODO: Please remove unused return variable
     return {
@@ -97,6 +187,31 @@ export default defineComponent({
       bari,
       optional,
       bazi,
+      actA,
+      actB,
+      actC,
+      actD,
+      actE,
+      actionEff,
+      actuhGee,
+      mutateA,
+      mutateB,
+      mutateC,
+      mutateD,
+      mutateE,
+      mEff,
+      mGee,
+      getA,
+      getB,
+      getC,
+      getTheC,
+      getTheD,
+      getTheE,
+      getTheG,
+      stateA,
+      stateB,
+      getStateC,
+      stateD,
       myDiv,
       mySpan,
       myComponent,
@@ -125,6 +240,7 @@ import {
   onBeforeUnmount,
   onUnmounted,
 } from \\"vue\\";
+import { useStore } from \\"vuex\\";
 const symbol = Symbol(\\"baz\\");
 /**
  * My basic tag
@@ -148,6 +264,7 @@ export default defineComponent({
   },
   name: \\"oao\\",
   setup(props, context) {
+    const store = useStore();
     /**
      * My count
      */
@@ -170,6 +287,91 @@ export default defineComponent({
     const bari = inject<string>(\\"bar\\");
     const optional = inject<string>(\\"optional\\", \\"default\\");
     const bazi = inject<string>(symbol);
+    /* TODO: check function dispatch call signature is correct*/ const actA =
+      async (arg: unknown): Promise<unknown> => {
+        return await store.dispatch(\\"actA\\", arg);
+      };
+    // hmm all actions are promises.
+    const actB = async (str: string): Promise<number> => {
+      return await store.dispatch(\\"actB\\", str);
+    };
+    const actC = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return await store.dispatch(\\"actC\\", val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const actD =
+      async (arg: unknown): Promise<unknown> => {
+        return await store.dispatch(\\"namespace/actD\\", arg);
+      };
+    const actE = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return await store.dispatch(\\"namespace/actE\\", val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const actionEff =
+      async (arg: unknown): Promise<unknown> => {
+        return await store.dispatch(actF, arg);
+      };
+    const actuhGee = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return await store.dispatch(actG, val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const mutateA =
+      (arg: unknown): unknown => {
+        return store.commit(\\"mutateA\\", arg);
+      };
+    const mutateB = (str: string): number => {
+      return store.commit(\\"mutateB\\", str);
+    };
+    const mutateC = (val: \\"foo\\" | \\"bar\\"): number => {
+      return store.commit(\\"mutateC\\", val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const mutateD =
+      (arg: unknown): unknown => {
+        return store.commit(\\"namespace/mutateD\\", arg);
+      };
+    const mutateE = (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
+      return store.commit(\\"namespace/mutateE\\", val);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const mEff = (
+      arg: unknown
+    ): unknown => {
+      return store.commit(mutateF, arg);
+    };
+    /* TODO: check function dispatch call signature is correct*/ const mGee = (
+      arg: unknown
+    ): unknown => {
+      return store.commit(mutateG, arg);
+    };
+    const getA = computed(() => {
+      return store.getters.getA;
+    });
+    const getB = computed<number>(() => {
+      return store.getters.getB;
+    });
+    const getC = computed<(str: string) => number>(() => {
+      return store.getters.getC;
+    });
+    const getTheC = computed(() => {
+      return store.getters[\\"namespace/getC\\"];
+    });
+    const getTheD = computed<number>(() => {
+      return store.getters[\\"namespace/getD\\"];
+    });
+    const getTheE = computed(() => {
+      return store.getters.cGetE;
+    });
+    const getTheG = computed<number>(() => {
+      return store.getters.cGetG;
+    });
+    const stateA = computed(() => {
+      return store.state.stateA;
+    });
+    const stateB = computed<number>(() => {
+      return store.state.stateB;
+    });
+    const getStateC = computed<Foo>(() => {
+      return store.state[\\"namespace/StateC\\"];
+    });
+    const stateD = computed<boolean>(() => {
+      return store.state[ns.keys.stateD];
+    });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
@@ -198,6 +400,9 @@ export default defineComponent({
      */
     const hello = () => {
       console.log(msg.value);
+      console.log(actB(\\"foo\\"));
+      console.log(getC.value(\\"bar\\"));
+      console.log(getStateC.value);
     };
     // TODO: Please remove unused return variable
     return {
@@ -208,6 +413,31 @@ export default defineComponent({
       bari,
       optional,
       bazi,
+      actA,
+      actB,
+      actC,
+      actD,
+      actE,
+      actionEff,
+      actuhGee,
+      mutateA,
+      mutateB,
+      mutateC,
+      mutateD,
+      mutateE,
+      mEff,
+      mGee,
+      getA,
+      getB,
+      getC,
+      getTheC,
+      getTheD,
+      getTheE,
+      getTheG,
+      stateA,
+      stateB,
+      getStateC,
+      stateD,
       myDiv,
       mySpan,
       myComponent,

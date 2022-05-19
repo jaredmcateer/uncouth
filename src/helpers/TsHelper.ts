@@ -1,5 +1,6 @@
 import ts from "typescript";
 import { UncouthOptions } from "../options";
+import { ImportModule } from "../plugins/types";
 import { isString } from "../utils";
 
 export class TsHelper {
@@ -15,11 +16,28 @@ export class TsHelper {
     return this.module.factory;
   }
 
-  namedImports(names: string[]): { named: string[]; external: string }[] {
+  get rocketToken(): ts.PunctuationToken<ts.SyntaxKind.EqualsGreaterThanToken> {
+    return this.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken);
+  }
+
+  getDecorator(node: ts.Node, decorator: string): ts.Decorator | undefined {
+    if (!node?.decorators) return;
+
+    return node.decorators.find(
+      (el) => (el.expression as ts.CallExpression).expression.getText() === decorator
+    );
+  }
+
+  getVueExternal(): "@vue/composition-api" | "vue" {
+    return this.compatible ? "@vue/composition-api" : "vue";
+  }
+
+  namedImports(names: string[], external?: string): ImportModule[] {
+    external = external || this.getVueExternal();
     return [
       {
         named: names,
-        external: this.compatible ? "@vue/composition-api" : "vue",
+        external,
       },
     ];
   }
