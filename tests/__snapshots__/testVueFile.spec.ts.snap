@@ -114,6 +114,7 @@ export default defineComponent({
      */
     const hello = () => {
       console.log(msg.value);
+      console.log(actB(\\"foo\\"));
     };
     // TODO: Please remove unused return variable
     return {
@@ -259,6 +260,7 @@ export default defineComponent({
      */
     const hello = () => {
       console.log(msg.value);
+      console.log(actB(\\"foo\\"));
     };
     // TODO: Please remove unused return variable
     return {

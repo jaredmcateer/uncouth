@@ -73,6 +73,7 @@ export default class BasicPropertyClass extends Vue {
    */
   hello() {
     console.log(this.msg);
+    console.log(this.actB("foo"));
   }
 
   beforeDestroy() {

@@ -14,7 +14,6 @@ export enum ReferenceKind {
   CONTEXT,
   NONE,
   TEMPLATE_REF,
-  VUEX_ACTION,
 }
 
 export type ImportModule =

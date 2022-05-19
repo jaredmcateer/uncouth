@@ -211,7 +211,7 @@ export default defineComponent({
     const anotherComponent = ref<HTMLElement>(null);
     /* TODO: check function dispatch call signature is correct*/ const actA =
       async (arg: unknown): Promise<unknown> => {
-        return await store.dispatch(arg);
+        return await store.dispatch(\\"actA\\", arg);
       };
     /* TODO: check function dispatch call signature is correct*/ const actD =
       async (arg: unknown): Promise<unknown> => {

@@ -30,7 +30,6 @@ export const convertAction: ASTConverter<ts.PropertyDeclaration> = (node, option
     args.length === 1
       ? args
       : ts.factory.createNodeArray([$t.factory.createStringLiteral(methodName)]);
-  // const variableName = args.length === 1 ? getVariableName(args[0]) : methodName;
   const value = createArrowFunction(node.type, dispatchArgs);
   const constStatement = $t.createConstStatement(methodName, value);
   let storeActionMethod = $t.copySyntheticComments(constStatement, node);
@@ -48,7 +47,7 @@ export const convertAction: ASTConverter<ts.PropertyDeclaration> = (node, option
     kind: ASTResultKind.COMPOSITION,
     imports: $t.namedImports(["useStore"], "vuex"),
     composables: [{ default: options.vuexKey, func: "useStore" }],
-    reference: ReferenceKind.VUEX_ACTION,
+    reference: ReferenceKind.VARIABLE,
     attributes: [methodName],
     nodes: [storeActionMethod],
   };
