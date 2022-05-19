@@ -5,7 +5,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Prop, Component, Ref, Model, Provide, Inject } from "vue-property-decorator";
-import { Action, Getter } from "vuex-class";
+import { Action, Getter, Mutation, State } from "vuex-class";
 import MyComponent from "my-component.vue";
 
 const symbol = Symbol("baz");
@@ -49,6 +49,14 @@ export default class BasicPropertyClass extends Vue {
   @Action("namespace/actE") actE: (val: "foo" | "bar") => Promise<number>;
   @Action(actF) actionEff;
   @Action(actG) actuhGee: (val: "foo" | "bar") => Promise<number>;
+
+  @Mutation() mutateA;
+  @Mutation() mutateB: (str: string) => number;
+  @Mutation() mutateC: (val: "foo" | "bar") => number;
+  @Mutation("namespace/mutateD") mutateD;
+  @Mutation("namespace/mutateE") mutateE: (val: "foo" | "bar") => Promise<number>;
+  @Mutation(mutateF) mEff;
+  @Mutation(mutateG) mGee:("foo" | "bar") => number;
 
   @Getter() getA;
   @Getter() getB: number;

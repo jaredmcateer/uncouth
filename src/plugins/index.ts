@@ -25,6 +25,7 @@ import { TsHelper } from "../helpers/TsHelper";
 import { convertVuexAction } from "./vuex-class/Action";
 import { convertVuexGetter } from "./vuex-class/Getter";
 import { convertVuexState } from "./vuex-class/State";
+import { convertVuexMutation } from "./vuex-class/Mutation";
 
 export function getDefaultPlugins(tsModule: typeof ts): ASTConvertPlugins {
   return {
@@ -47,6 +48,7 @@ export function getDefaultPlugins(tsModule: typeof ts): ASTConvertPlugins {
       convertVuexAction,
       convertVuexGetter,
       convertVuexState,
+      convertVuexMutation,
     ],
     [tsModule.SyntaxKind.GetAccessor]: [convertGetter],
     [tsModule.SyntaxKind.SetAccessor]: [convertSetter],

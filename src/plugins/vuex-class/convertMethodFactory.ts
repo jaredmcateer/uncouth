@@ -30,10 +30,10 @@ export const convertVuexMethodFactory: MethodFactory = (decoratorName, storeProp
         $t.factory.createIdentifier(parameters[0].name.getText()),
       ]);
 
-      if (isPromiseTypeReference(nodeType)) {
-        typeReference = nodeType.type;
-      } else {
+      if (isAsync() && !isPromiseTypeReference(nodeType)) {
         typeReference = $t.factory.createTypeReferenceNode("Promise", [nodeType.type]);
+      } else {
+        typeReference = nodeType.type;
       }
     } else {
       let arg: ts.Identifier;
@@ -79,7 +79,7 @@ export const convertVuexMethodFactory: MethodFactory = (decoratorName, storeProp
 
   function unknownMethodType(): [
     ts.NodeArray<ts.ParameterDeclaration>,
-    ts.TypeReferenceNode,
+    ts.TypeReferenceNode | ts.KeywordTypeNode,
     ts.Identifier
   ] {
     const argIdentifier = $t.factory.createIdentifier("arg");
@@ -87,8 +87,9 @@ export const convertVuexMethodFactory: MethodFactory = (decoratorName, storeProp
     const parameter = $t.factory.createParameterDeclaration(u, u, u, argIdentifier, u, argType, u);
     const parameters = $t.factory.createNodeArray([parameter]);
     const referenceNodeType = $t.factory.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword);
-    const typeReference = $t.factory.createTypeReferenceNode("Promise", [referenceNodeType]);
-
+    const typeReference = isAsync()
+      ? $t.factory.createTypeReferenceNode("Promise", [referenceNodeType])
+      : referenceNodeType;
     return [parameters, typeReference, argIdentifier];
   }
 

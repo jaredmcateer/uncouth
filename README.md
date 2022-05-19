@@ -61,7 +61,7 @@ The files to be converted must meet the criteria below:
 - vuex-class
   - [x] `@Action`
   - [x] `@Getter`
-  - [ ] `@Mutation`
+  - [x] `@Mutation`
   - [x] `@State`
   - `@<namespace>`
     - [ ] `.Action`
