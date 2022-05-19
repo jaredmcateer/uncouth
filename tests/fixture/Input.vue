@@ -58,6 +58,11 @@ export default class BasicPropertyClass extends Vue {
   @Getter(cGetE) getTheE;
   @Getter(cGetG) getTheG: number;
 
+  @State() stateA;
+  @State() stateB: number;
+  @State("namespace/StateC") getStateC: Foo;
+  @State(ns.keys.stateD) stateD: boolean;
+
   $refs!: {
     myDiv: HTMLDivElement;
     mySpan;
@@ -83,6 +88,7 @@ export default class BasicPropertyClass extends Vue {
     console.log(this.msg);
     console.log(this.actB("foo"));
     console.log(this.getC("bar"));
+    console.log(this.getStateC);
   }
 
   beforeDestroy() {

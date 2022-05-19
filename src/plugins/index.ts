@@ -24,6 +24,7 @@ import { convertTemplateRef } from "./vue-class-component/TemplateRef";
 import { TsHelper } from "../helpers/TsHelper";
 import { convertVuexAction } from "./vuex-class/Action";
 import { convertVuexGetter } from "./vuex-class/Getter";
+import { convertVuexState } from "./vuex-class/State";
 
 export function getDefaultPlugins(tsModule: typeof ts): ASTConvertPlugins {
   return {
@@ -45,6 +46,7 @@ export function getDefaultPlugins(tsModule: typeof ts): ASTConvertPlugins {
       convertTemplateRef,
       convertVuexAction,
       convertVuexGetter,
+      convertVuexState,
     ],
     [tsModule.SyntaxKind.GetAccessor]: [convertGetter],
     [tsModule.SyntaxKind.SetAccessor]: [convertSetter],

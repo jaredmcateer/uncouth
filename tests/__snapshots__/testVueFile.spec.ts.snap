@@ -107,6 +107,18 @@ export default defineComponent({
     const getTheG = computed<number>(() => {
       return store.getters.cGetG;
     });
+    const stateA = computed(() => {
+      return store.state.stateA;
+    });
+    const stateB = computed<number>(() => {
+      return store.state.stateB;
+    });
+    const getStateC = computed<Foo>(() => {
+      return store.state[\\"namespace/StateC\\"];
+    });
+    const stateD = computed<boolean>(() => {
+      return store.state[ns.keys.stateD];
+    });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
@@ -137,6 +149,7 @@ export default defineComponent({
       console.log(msg.value);
       console.log(actB(\\"foo\\"));
       console.log(getC.value(\\"bar\\"));
+      console.log(getStateC.value);
     };
     // TODO: Please remove unused return variable
     return {
@@ -161,6 +174,10 @@ export default defineComponent({
       getTheD,
       getTheE,
       getTheG,
+      stateA,
+      stateB,
+      getStateC,
+      stateD,
       myDiv,
       mySpan,
       myComponent,
@@ -282,6 +299,18 @@ export default defineComponent({
     const getTheG = computed<number>(() => {
       return store.getters.cGetG;
     });
+    const stateA = computed(() => {
+      return store.state.stateA;
+    });
+    const stateB = computed<number>(() => {
+      return store.state.stateB;
+    });
+    const getStateC = computed<Foo>(() => {
+      return store.state[\\"namespace/StateC\\"];
+    });
+    const stateD = computed<boolean>(() => {
+      return store.state[ns.keys.stateD];
+    });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
@@ -312,6 +341,7 @@ export default defineComponent({
       console.log(msg.value);
       console.log(actB(\\"foo\\"));
       console.log(getC.value(\\"bar\\"));
+      console.log(getStateC.value);
     };
     // TODO: Please remove unused return variable
     return {
@@ -336,6 +366,10 @@ export default defineComponent({
       getTheD,
       getTheE,
       getTheG,
+      stateA,
+      stateB,
+      getStateC,
+      stateD,
       myDiv,
       mySpan,
       myComponent,
