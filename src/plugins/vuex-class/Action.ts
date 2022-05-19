@@ -18,7 +18,7 @@ let $t: TsHelper;
  * @param options
  * @returns
  */
-export const convertAction: ASTConverter<ts.PropertyDeclaration> = (node, options) => {
+export const convertVuexAction: ASTConverter<ts.PropertyDeclaration> = (node, options) => {
   $t = new TsHelper(options);
   const decorator = $t.getDecorator(node, ACTION_DECORATOR);
 
