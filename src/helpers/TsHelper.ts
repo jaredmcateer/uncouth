@@ -157,15 +157,6 @@ export class TsHelper {
     );
   }
 
-  createSimpleArrowFunction(returnValueExpr: ts.Expression): ts.ArrowFunction {
-    const u = undefined;
-    const _return = this.factory.createReturnStatement(returnValueExpr);
-    const _body = this.factory.createBlock([_return]);
-    const arrowFunc = this.factory.createArrowFunction(u, u, [], u, this.rocketToken, _body);
-
-    return arrowFunc;
-  }
-
   createConstStatement(
     name: string | ts.BindingName,
     expression: ts.Expression
