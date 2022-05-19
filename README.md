@@ -62,7 +62,7 @@ The files to be converted must meet the criteria below:
   - [x] `@Action`
   - [x] `@Getter`
   - [ ] `@Mutation`
-  - [ ] `@State`
+  - [x] `@State`
   - `@<namespace>`
     - [ ] `.Action`
     - [ ] `.Getter`
