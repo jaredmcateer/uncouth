@@ -60,7 +60,7 @@ The files to be converted must meet the criteria below:
   - [x] `@Ref`
 - vuex-class
   - [x] `@Action`
-  - [ ] `@Getter`
+  - [x] `@Getter`
   - [ ] `@Mutation`
   - [ ] `@State`
   - `@<namespace>`
