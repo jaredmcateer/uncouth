@@ -1,5 +1,6 @@
 import Vue from "vue";
 import { Prop, Component, Ref, Model, Watch, Emit } from "vue-property-decorator";
+import { Action, Getter } from "vuex-class";
 
 /**
  * My basic tag
@@ -30,6 +31,11 @@ export default class BasicPropertyClass extends Vue {
   @Action("namespace/actD") actD;
   @Action("namespace/actE") actE: (val: "foo" | "bar") => Promise<number>;
   @Action(actG) actuhGee: (val: "foo" | "bar") => Promise<number>;
+
+  @Getter() getA;
+  @Getter() getB: number;
+  @Getter("namespace/getC") getTheC;
+  @Getter(cGetG) getTheG: number;
 
   $refs!: {
     myDiv: HTMLDivElement;

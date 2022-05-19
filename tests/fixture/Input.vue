@@ -5,7 +5,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Prop, Component, Ref, Model, Provide, Inject } from "vue-property-decorator";
-import { Action } from "vuex-class";
+import { Action, Getter } from "vuex-class";
 import MyComponent from "my-component.vue";
 
 const symbol = Symbol("baz");
@@ -50,6 +50,14 @@ export default class BasicPropertyClass extends Vue {
   @Action(actF) actionEff;
   @Action(actG) actuhGee: (val: "foo" | "bar") => Promise<number>;
 
+  @Getter() getA;
+  @Getter() getB: number;
+  @Getter() getC: (str: string) => number;
+  @Getter("namespace/getC") getTheC;
+  @Getter("namespace/getD") getTheD: number;
+  @Getter(cGetE) getTheE;
+  @Getter(cGetG) getTheG: number;
+
   $refs!: {
     myDiv: HTMLDivElement;
     mySpan;
@@ -74,6 +82,7 @@ export default class BasicPropertyClass extends Vue {
   hello() {
     console.log(this.msg);
     console.log(this.actB("foo"));
+    console.log(this.getC("bar"));
   }
 
   beforeDestroy() {

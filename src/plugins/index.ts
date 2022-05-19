@@ -22,7 +22,8 @@ import { convertInject } from "./vue-property-decorator/Inject";
 import { convertProvide } from "./vue-property-decorator/Provide";
 import { convertTemplateRef } from "./vue-class-component/TemplateRef";
 import { TsHelper } from "../helpers/TsHelper";
-import { convertAction } from "./vuex-class/Action";
+import { convertVuexAction } from "./vuex-class/Action";
+import { convertVuexGetter } from "./vuex-class/Getter";
 
 export function getDefaultPlugins(tsModule: typeof ts): ASTConvertPlugins {
   return {
@@ -42,7 +43,8 @@ export function getDefaultPlugins(tsModule: typeof ts): ASTConvertPlugins {
       convertInject,
       convertData,
       convertTemplateRef,
-      convertAction,
+      convertVuexAction,
+      convertVuexGetter,
     ],
     [tsModule.SyntaxKind.GetAccessor]: [convertGetter],
     [tsModule.SyntaxKind.SetAccessor]: [convertSetter],

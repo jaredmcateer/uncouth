@@ -86,6 +86,27 @@ export default defineComponent({
     const actuhGee = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
       return await store.dispatch(actG, val);
     };
+    const getA = computed(() => {
+      return store.dispatch.getA;
+    });
+    const getB = computed<number>(() => {
+      return store.dispatch.getB;
+    });
+    const getC = computed<(str: string) => number>(() => {
+      return store.dispatch.getC;
+    });
+    const getTheC = computed(() => {
+      return store.dispatch[\\"namespace/getC\\"];
+    });
+    const getTheD = computed<number>(() => {
+      return store.dispatch[\\"namespace/getD\\"];
+    });
+    const getTheE = computed(() => {
+      return store.dispatch.cGetE;
+    });
+    const getTheG = computed<number>(() => {
+      return store.dispatch.cGetG;
+    });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
@@ -115,6 +136,7 @@ export default defineComponent({
     const hello = () => {
       console.log(msg.value);
       console.log(actB(\\"foo\\"));
+      console.log(getC.value(\\"bar\\"));
     };
     // TODO: Please remove unused return variable
     return {
@@ -132,6 +154,13 @@ export default defineComponent({
       actE,
       actionEff,
       actuhGee,
+      getA,
+      getB,
+      getC,
+      getTheC,
+      getTheD,
+      getTheE,
+      getTheG,
       myDiv,
       mySpan,
       myComponent,
@@ -232,6 +261,27 @@ export default defineComponent({
     const actuhGee = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
       return await store.dispatch(actG, val);
     };
+    const getA = computed(() => {
+      return store.dispatch.getA;
+    });
+    const getB = computed<number>(() => {
+      return store.dispatch.getB;
+    });
+    const getC = computed<(str: string) => number>(() => {
+      return store.dispatch.getC;
+    });
+    const getTheC = computed(() => {
+      return store.dispatch[\\"namespace/getC\\"];
+    });
+    const getTheD = computed<number>(() => {
+      return store.dispatch[\\"namespace/getD\\"];
+    });
+    const getTheE = computed(() => {
+      return store.dispatch.cGetE;
+    });
+    const getTheG = computed<number>(() => {
+      return store.dispatch.cGetG;
+    });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
@@ -261,6 +311,7 @@ export default defineComponent({
     const hello = () => {
       console.log(msg.value);
       console.log(actB(\\"foo\\"));
+      console.log(getC.value(\\"bar\\"));
     };
     // TODO: Please remove unused return variable
     return {
@@ -278,6 +329,13 @@ export default defineComponent({
       actE,
       actionEff,
       actuhGee,
+      getA,
+      getB,
+      getC,
+      getTheC,
+      getTheD,
+      getTheE,
+      getTheG,
       myDiv,
       mySpan,
       myComponent,

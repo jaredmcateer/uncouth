@@ -65,6 +65,18 @@ export default defineComponent({
     const actuhGee = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
       return await store.dispatch(actG, val);
     };
+    const getA = computed(() => {
+      return store.dispatch.getA;
+    });
+    const getB = computed<number>(() => {
+      return store.dispatch.getB;
+    });
+    const getTheC = computed(() => {
+      return store.dispatch[\\"namespace/getC\\"];
+    });
+    const getTheG = computed<number>(() => {
+      return store.dispatch.cGetG;
+    });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
@@ -136,6 +148,10 @@ export default defineComponent({
       actD,
       actE,
       actuhGee,
+      getA,
+      getB,
+      getTheC,
+      getTheG,
       myDiv,
       mySpan,
       myComponent,
@@ -223,6 +239,18 @@ export default defineComponent({
     const actuhGee = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
       return await store.dispatch(actG, val);
     };
+    const getA = computed(() => {
+      return store.dispatch.getA;
+    });
+    const getB = computed<number>(() => {
+      return store.dispatch.getB;
+    });
+    const getTheC = computed(() => {
+      return store.dispatch[\\"namespace/getC\\"];
+    });
+    const getTheG = computed<number>(() => {
+      return store.dispatch.cGetG;
+    });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
@@ -294,6 +322,10 @@ export default defineComponent({
       actD,
       actE,
       actuhGee,
+      getA,
+      getB,
+      getTheC,
+      getTheG,
       myDiv,
       mySpan,
       myComponent,
@@ -380,6 +412,18 @@ export default defineComponent({
     const actuhGee = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
       return await store.dispatch(actG, val);
     };
+    const getA = computed(() => {
+      return store.dispatch.getA;
+    });
+    const getB = computed<number>(() => {
+      return store.dispatch.getB;
+    });
+    const getTheC = computed(() => {
+      return store.dispatch[\\"namespace/getC\\"];
+    });
+    const getTheG = computed<number>(() => {
+      return store.dispatch.cGetG;
+    });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
     /* TODO: Check for potential naming collisions from $refs conversion*/ const mySpan =
@@ -451,6 +495,10 @@ export default defineComponent({
       actD,
       actE,
       actuhGee,
+      getA,
+      getB,
+      getTheC,
+      getTheG,
       myDiv,
       mySpan,
       myComponent,
