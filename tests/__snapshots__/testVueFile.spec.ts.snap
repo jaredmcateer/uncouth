@@ -87,25 +87,25 @@ export default defineComponent({
       return await store.dispatch(actG, val);
     };
     const getA = computed(() => {
-      return store.dispatch.getA;
+      return store.getters.getA;
     });
     const getB = computed<number>(() => {
-      return store.dispatch.getB;
+      return store.getters.getB;
     });
     const getC = computed<(str: string) => number>(() => {
-      return store.dispatch.getC;
+      return store.getters.getC;
     });
     const getTheC = computed(() => {
-      return store.dispatch[\\"namespace/getC\\"];
+      return store.getters[\\"namespace/getC\\"];
     });
     const getTheD = computed<number>(() => {
-      return store.dispatch[\\"namespace/getD\\"];
+      return store.getters[\\"namespace/getD\\"];
     });
     const getTheE = computed(() => {
-      return store.dispatch.cGetE;
+      return store.getters.cGetE;
     });
     const getTheG = computed<number>(() => {
-      return store.dispatch.cGetG;
+      return store.getters.cGetG;
     });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
@@ -262,25 +262,25 @@ export default defineComponent({
       return await store.dispatch(actG, val);
     };
     const getA = computed(() => {
-      return store.dispatch.getA;
+      return store.getters.getA;
     });
     const getB = computed<number>(() => {
-      return store.dispatch.getB;
+      return store.getters.getB;
     });
     const getC = computed<(str: string) => number>(() => {
-      return store.dispatch.getC;
+      return store.getters.getC;
     });
     const getTheC = computed(() => {
-      return store.dispatch[\\"namespace/getC\\"];
+      return store.getters[\\"namespace/getC\\"];
     });
     const getTheD = computed<number>(() => {
-      return store.dispatch[\\"namespace/getD\\"];
+      return store.getters[\\"namespace/getD\\"];
     });
     const getTheE = computed(() => {
-      return store.dispatch.cGetE;
+      return store.getters.cGetE;
     });
     const getTheG = computed<number>(() => {
-      return store.dispatch.cGetG;
+      return store.getters.cGetG;
     });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);

@@ -66,16 +66,16 @@ export default defineComponent({
       return await store.dispatch(actG, val);
     };
     const getA = computed(() => {
-      return store.dispatch.getA;
+      return store.getters.getA;
     });
     const getB = computed<number>(() => {
-      return store.dispatch.getB;
+      return store.getters.getB;
     });
     const getTheC = computed(() => {
-      return store.dispatch[\\"namespace/getC\\"];
+      return store.getters[\\"namespace/getC\\"];
     });
     const getTheG = computed<number>(() => {
-      return store.dispatch.cGetG;
+      return store.getters.cGetG;
     });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
@@ -240,16 +240,16 @@ export default defineComponent({
       return await store.dispatch(actG, val);
     };
     const getA = computed(() => {
-      return store.dispatch.getA;
+      return store.getters.getA;
     });
     const getB = computed<number>(() => {
-      return store.dispatch.getB;
+      return store.getters.getB;
     });
     const getTheC = computed(() => {
-      return store.dispatch[\\"namespace/getC\\"];
+      return store.getters[\\"namespace/getC\\"];
     });
     const getTheG = computed<number>(() => {
-      return store.dispatch.cGetG;
+      return store.getters.cGetG;
     });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
@@ -413,16 +413,16 @@ export default defineComponent({
       return await store.dispatch(actG, val);
     };
     const getA = computed(() => {
-      return store.dispatch.getA;
+      return store.getters.getA;
     });
     const getB = computed<number>(() => {
-      return store.dispatch.getB;
+      return store.getters.getB;
     });
     const getTheC = computed(() => {
-      return store.dispatch[\\"namespace/getC\\"];
+      return store.getters[\\"namespace/getC\\"];
     });
     const getTheG = computed<number>(() => {
-      return store.dispatch.cGetG;
+      return store.getters.cGetG;
     });
     /* TODO: Check for potential naming collisions from $refs conversion*/ const myDiv =
       ref<HTMLDivElement>(null);
