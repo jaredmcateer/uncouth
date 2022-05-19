@@ -94,16 +94,6 @@ function createArrowFunction(
   return arrowFunc;
 }
 
-function getVariableName(decoratorArg: ts.Expression) {
-  if ($t.module.isStringLiteral(decoratorArg)) {
-    return decoratorArg.text;
-  } else if ($t.module.isPropertyAccessExpression(decoratorArg)) {
-    return decoratorArg.name.getText();
-  } else {
-    return decoratorArg.getText();
-  }
-}
-
 function createDispatchReturn(params: ts.NodeArray<ts.Expression>): ts.ReturnStatement {
   const propertyAccessExpr = $t.factory.createPropertyAccessExpression(
     $t.factory.createIdentifier("store"),
