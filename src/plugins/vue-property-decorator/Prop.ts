@@ -31,22 +31,25 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
 
     if (decoratorArguments.length > 0 || hasKnowableType) {
       const propName = node.name.getText();
-      const propArguments = decoratorArguments[0] as ts.ObjectLiteralExpression;
-      const props = propArguments.properties.reduce((accumulator, property) => {
-        if (property.kind === ts.SyntaxKind.PropertyAssignment) {
-          let initializer: ts.AsExpression = property.initializer as ts.AsExpression;
-          if (node.type && property.name.getText() === "type") {
-            const typeReference = $t.factory.createTypeReferenceNode(propType, [node.type]);
-            initializer = $t.factory.createAsExpression(property.initializer, typeReference);
-            addedPropKey = true;
+      const propArguments = decoratorArguments[0];
+      let props: ts.ObjectLiteralElementLike[] = [];
+      if (propArguments && $t.module.isObjectLiteralExpression(propArguments)) {
+        props = propArguments.properties.reduce((accumulator, property) => {
+          if (property.kind === ts.SyntaxKind.PropertyAssignment) {
+            let initializer: ts.AsExpression = property.initializer as ts.AsExpression;
+            if (node.type && property.name.getText() === "type") {
+              const typeReference = $t.factory.createTypeReferenceNode(propType, [node.type]);
+              initializer = $t.factory.createAsExpression(property.initializer, typeReference);
+              addedPropKey = true;
+            }
+
+            const newProperty = $t.factory.createPropertyAssignment(property.name, initializer);
+            accumulator.push(newProperty);
           }
 
-          const newProperty = $t.factory.createPropertyAssignment(property.name, initializer);
-          accumulator.push(newProperty);
-        }
-
-        return accumulator;
-      }, [] as ts.ObjectLiteralElementLike[]);
+          return accumulator;
+        }, [] as ts.ObjectLiteralElementLike[]);
+      }
 
       const args = $t.factory.createObjectLiteralExpression(props);
 
