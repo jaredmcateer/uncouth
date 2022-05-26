@@ -25,10 +25,10 @@ export const convertVuexMethodFactory: MethodFactory = (decoratorName, storeProp
 
     if (isFunctionType(nodeType)) {
       parameters = nodeType.parameters;
-      dispatchArgs = $t.factory.createNodeArray([
-        ...dispatchArgs,
-        $t.factory.createIdentifier(parameters[0].name.getText()),
-      ]);
+      const idName = parameters[0]?.name.getText();
+      const args = [...dispatchArgs];
+      if (idName) args.push($t.factory.createIdentifier(idName));
+      dispatchArgs = $t.factory.createNodeArray(args);
 
       if (isAsync() && !isPromiseTypeReference(nodeType)) {
         typeReference = $t.factory.createTypeReferenceNode("Promise", [nodeType.type]);

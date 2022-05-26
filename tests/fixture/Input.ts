@@ -31,11 +31,13 @@ export default class BasicPropertyClass extends Vue {
   @Action("namespace/actD") actD;
   @Action("namespace/actE") actE: (val: "foo" | "bar") => Promise<number>;
   @Action(actG) actuhGee: (val: "foo" | "bar") => Promise<number>;
+  @Action() actH: () => Promise<number>;
 
   @Mutation() mutateA;
   @Mutation("namespace/mutateB") mutateB;
   @Mutation("namespace/mutateE") mutateE: (val: "foo" | "bar") => number;
   @Mutation(mutateG) mGee: (val: "foo" | "bar") => number;
+  @Mutation() mutateH: () => number;
 
   @Getter() getA;
   @Getter() getB: number;

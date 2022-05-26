@@ -65,6 +65,9 @@ export default defineComponent({
     const actuhGee = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
       return await store.dispatch(actG, val);
     };
+    const actH = async (): Promise<number> => {
+      return await store.dispatch(\\"actH\\");
+    };
     /* TODO: check function dispatch call signature is correct*/ const mutateA =
       (arg: unknown): unknown => {
         return store.commit(\\"mutateA\\", arg);
@@ -78,6 +81,9 @@ export default defineComponent({
     };
     const mGee = (val: \\"foo\\" | \\"bar\\"): number => {
       return store.commit(mutateG, val);
+    };
+    const mutateH = (): number => {
+      return store.commit(\\"mutateH\\");
     };
     const getA = computed(() => {
       return store.getters.getA;
@@ -174,10 +180,12 @@ export default defineComponent({
       actD,
       actE,
       actuhGee,
+      actH,
       mutateA,
       mutateB,
       mutateE,
       mGee,
+      mutateH,
       getA,
       getB,
       getTheC,
@@ -273,6 +281,9 @@ export default defineComponent({
     const actuhGee = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
       return await store.dispatch(actG, val);
     };
+    const actH = async (): Promise<number> => {
+      return await store.dispatch(\\"actH\\");
+    };
     /* TODO: check function dispatch call signature is correct*/ const mutateA =
       (arg: unknown): unknown => {
         return store.commit(\\"mutateA\\", arg);
@@ -286,6 +297,9 @@ export default defineComponent({
     };
     const mGee = (val: \\"foo\\" | \\"bar\\"): number => {
       return store.commit(mutateG, val);
+    };
+    const mutateH = (): number => {
+      return store.commit(\\"mutateH\\");
     };
     const getA = computed(() => {
       return store.getters.getA;
@@ -382,10 +396,12 @@ export default defineComponent({
       actD,
       actE,
       actuhGee,
+      actH,
       mutateA,
       mutateB,
       mutateE,
       mGee,
+      mutateH,
       getA,
       getB,
       getTheC,
@@ -480,6 +496,9 @@ export default defineComponent({
     const actuhGee = async (val: \\"foo\\" | \\"bar\\"): Promise<number> => {
       return await store.dispatch(actG, val);
     };
+    const actH = async (): Promise<number> => {
+      return await store.dispatch(\\"actH\\");
+    };
     /* TODO: check function dispatch call signature is correct*/ const mutateA =
       (arg: unknown): unknown => {
         return store.commit(\\"mutateA\\", arg);
@@ -493,6 +512,9 @@ export default defineComponent({
     };
     const mGee = (val: \\"foo\\" | \\"bar\\"): number => {
       return store.commit(mutateG, val);
+    };
+    const mutateH = (): number => {
+      return store.commit(\\"mutateH\\");
     };
     const getA = computed(() => {
       return store.getters.getA;
@@ -589,10 +611,12 @@ export default defineComponent({
       actD,
       actE,
       actuhGee,
+      actH,
       mutateA,
       mutateB,
       mutateE,
       mGee,
+      mutateH,
       getA,
       getB,
       getTheC,
