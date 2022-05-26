@@ -26,6 +26,15 @@ export default class BasicPropertyClass extends Vue {
   @Prop({ type: Boolean, default: false }) foo!;
   @Prop({ type: Number, default: 1 }) bar: number;
   @Prop({ type: Object }) foobar: CustomType;
+  @Prop() noType: any;
+  @Prop() stringType: string;
+  @Prop() booleanType: boolean;
+  @Prop() numberType: number;
+  @Prop() stringLiteralType: "foo";
+  @Prop() numericLiteral: 2;
+  @Prop() booleanLiteral: true;
+  @Prop() complexType: true | "false";
+  @Prop() complexType2: string[];
 
   @Action() actA;
   @Action("namespace/actD") actD;

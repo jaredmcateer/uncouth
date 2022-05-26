@@ -31,6 +31,17 @@ export default defineComponent({
     foo: { type: Boolean, default: false },
     bar: { type: Number as PropType<number>, default: 1 },
     foobar: { type: Object as PropType<CustomType> },
+    noType: {},
+    stringType: { type: String },
+    booleanType: { type: Boolean },
+    numberType: { type: Number },
+    stringLiteralType: { type: String as PropType<\\"foo\\"> },
+    numericLiteral: { type: Number as PropType<2> },
+    booleanLiteral: { type: Boolean as PropType<true> },
+    /* TODO: Too complex to determine primitive type: true | \\"false\\" */ complexType:
+      {},
+    /* TODO: Too complex to determine primitive type: string[] */ complexType2:
+      {},
   },
   name: \\"oao\\",
   setup(props, context) {
@@ -247,6 +258,17 @@ export default defineComponent({
     foo: { type: Boolean, default: false },
     bar: { type: Number as PropType<number>, default: 1 },
     foobar: { type: Object as PropType<CustomType> },
+    noType: {},
+    stringType: { type: String },
+    booleanType: { type: Boolean },
+    numberType: { type: Number },
+    stringLiteralType: { type: String as PropType<\\"foo\\"> },
+    numericLiteral: { type: Number as PropType<2> },
+    booleanLiteral: { type: Boolean as PropType<true> },
+    /* TODO: Too complex to determine primitive type: true | \\"false\\" */ complexType:
+      {},
+    /* TODO: Too complex to determine primitive type: string[] */ complexType2:
+      {},
   },
   name: \\"oao\\",
   setup(props, ctx) {
@@ -462,6 +484,17 @@ export default defineComponent({
     foo: { type: Boolean, default: false },
     bar: { type: Number as PropType<number>, default: 1 },
     foobar: { type: Object as PropType<CustomType> },
+    noType: {},
+    stringType: { type: String },
+    booleanType: { type: Boolean },
+    numberType: { type: Number },
+    stringLiteralType: { type: String as PropType<\\"foo\\"> },
+    numericLiteral: { type: Number as PropType<2> },
+    booleanLiteral: { type: Boolean as PropType<true> },
+    /* TODO: Too complex to determine primitive type: true | \\"false\\" */ complexType:
+      {},
+    /* TODO: Too complex to determine primitive type: string[] */ complexType2:
+      {},
   },
   name: \\"oao\\",
   setup(props, context) {
