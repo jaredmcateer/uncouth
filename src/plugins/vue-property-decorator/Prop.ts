@@ -28,7 +28,7 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
       type !== ts.SyntaxKind.AnyKeyword &&
       type !== ts.SyntaxKind.UndefinedKeyword &&
       type !== ts.SyntaxKind.UnknownKeyword;
-    let addedPropKey = false;
+    let addedPropType = false;
     let addTodoComplex = false;
 
     let props: ts.ObjectLiteralElementLike[] = [];
@@ -43,7 +43,7 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
             if (node.type && property.name.getText() === "type") {
               const typeReference = $t.factory.createTypeReferenceNode(propType, [node.type]);
               initializer = $t.factory.createAsExpression(property.initializer, typeReference);
-              addedPropKey = true;
+              addedPropType = true;
             }
 
             const newProperty = $t.factory.createPropertyAssignment(property.name, initializer);
@@ -59,11 +59,9 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
           type = node.type.literal.kind;
         }
 
-        let addTsType = false;
-
         switch (type) {
           case ts.SyntaxKind.StringLiteral:
-            addTsType = true;
+            addedPropType = true;
             primType = "String";
             break;
           case ts.SyntaxKind.StringKeyword:
@@ -71,14 +69,14 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
             break;
           case ts.SyntaxKind.TrueKeyword:
           case ts.SyntaxKind.FalseKeyword:
-            addTsType = true;
+            addedPropType = true;
             primType = "Boolean";
             break;
           case ts.SyntaxKind.BooleanKeyword:
             primType = "Boolean";
             break;
           case ts.SyntaxKind.NumericLiteral:
-            addTsType = true;
+            addedPropType = true;
             primType = "Number";
             break;
           case ts.SyntaxKind.NumberKeyword:
@@ -91,7 +89,7 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
 
         if (primType) {
           const vueIdentifier = $t.factory.createIdentifier(primType);
-          const tsIdentifier = addTsType
+          const tsIdentifier = addedPropType
             ? $t.factory.createIdentifier(node.type.getText())
             : undefined;
           props = [createPropTypeAssignment(vueIdentifier, tsIdentifier)];
@@ -111,7 +109,7 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
     return {
       tag: "Prop",
       kind: ASTResultKind.COMPOSITION,
-      imports: addedPropKey ? $t.namedImports([propType]) : [],
+      imports: addedPropType ? $t.namedImports([propType]) : [],
       reference: ReferenceKind.PROPS,
       attributes: [propName],
       nodes: [$t.copySyntheticComments(propAssignment, node)],
