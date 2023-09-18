@@ -84,7 +84,7 @@ export const convertVuexMethodFactory: MethodFactory = (decoratorName, storeProp
   ] {
     const argIdentifier = $t.factory.createIdentifier("arg");
     const argType = $t.factory.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword);
-    const parameter = $t.factory.createParameterDeclaration(u, u, u, argIdentifier, u, argType, u);
+    const parameter = $t.factory.createParameterDeclaration(u, u, argIdentifier, u, argType, u);
     const parameters = $t.factory.createNodeArray([parameter]);
     const referenceNodeType = $t.factory.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword);
     const typeReference = isAsync()

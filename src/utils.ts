@@ -40,17 +40,14 @@ export function getDefaultExportNode(
 }
 
 export function getDecoratorNames(tsModule: typeof ts, node: ts.Node): string[] {
-  if (node.decorators) {
-    return node.decorators.map((el) => {
-      if (tsModule.isCallExpression(el.expression)) {
-        return el.expression.expression.getText();
-      } else {
-        return el.expression.getText();
-      }
-    });
-  }
+  if (!tsModule.canHaveDecorators(node)) return [];
 
-  return [];
+  const decorators = tsModule.getDecorators(node) ?? [];
+  return decorators.map((el) =>
+    tsModule.isCallExpression(el.expression)
+      ? el.expression.expression.getText()
+      : el.expression.getText()
+  );
 }
 
 const $internalHooks = new Map<string, string | false>([

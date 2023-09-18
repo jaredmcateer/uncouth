@@ -31,7 +31,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14, 16, 18]
+        node-version: [16, 18, 20]
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
@@ -42,18 +42,36 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: yarn
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8.7.5
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "$STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ matrix.os }}-${{ matrix.node-version }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ matrix.os }}-${{ matrix.node-version }}-pnpm-store-
+
+      - name: Run lint
+        run: pnpm lint
 
       - name: Run test
-        run: |
-          yarn test
+        run: pnpm test
+
       - name: codecov
         if: matrix.os == 'ubuntu-latest' && matrix.node-version == 16
         run: |
-          yarn codecov --token="${{ secrets.CODECOV_TOKEN }}"
+          pnpm codecov --token="${{ secrets.CODECOV_TOKEN }}"
 
   demo:
     needs: [lint, test]
@@ -66,14 +84,32 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
-          cache: yarn
+          node-version: 18
 
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8.7.5
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "$STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ matrix.os }}-pnpm-store-
+            
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build demo
-        run:  yarn demo:build
+        run:  pnpm demo:build
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.3.3
@@ -93,14 +129,32 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: yarn
 
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8.7.5
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "$STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ matrix.os }}-pnpm-store-
+            
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          yarn install --frozen-lockfile
-          yarn build
-          yarn semantic-release
+          pnpm install --frozen-lockfile
+          pnpm build
+          pnpm semantic-release
 

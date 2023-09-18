@@ -9,26 +9,13 @@ on:
       - master
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js 16
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: yarn
-      - name: Run lint
-        run: |
-          yarn install --frozen-lockfile
-          yarn lint
-  test:
+  lint-and-test:
     name: Test on node ${{ matrix.node-version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        node-version: [14, 16, 18]
+        node-version: [16, 18, 20]
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
@@ -39,15 +26,33 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: yarn
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8.7.5
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "$STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ matrix.os }}-${{ matrix.node-version }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ matrix.os }}-${{ matrix.node-version }}-pnpm-store-
+
+      - name: Run lint
+        run: pnpm lint
 
       - name: Run test
-        run: yarn test
+        run: pnpm test
 
       - name: codecov
         if: matrix.os == 'ubuntu-latest' && matrix.node-version == 16
         run: |
-          yarn codecov --token="${{ secrets.CODECOV_TOKEN }}"
+          pnpm codecov --token="${{ secrets.CODECOV_TOKEN }}"
