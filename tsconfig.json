@@ -3,7 +3,7 @@
     "incremental": true,
     "target": "es6",
     "module": "commonjs",
-    "lib": ["es2020", "dom"],
+    "lib": ["es2020", "es2021", "es2022", "dom"],
     "declaration": true,
     "declarationDir": "./dist/types/",
     "sourceMap": true,

@@ -42,9 +42,9 @@ export const mergeComputed: ASTTransform = (astResults, options) => {
 
     let computedExpression: ts.Expression;
     if (setter) {
-      computedExpression = $t.factory.createObjectLiteralExpression([
-        $t.factory.createPropertyAssignment("get", getter.nodes[0] as ts.Expression),
-        $t.factory.createPropertyAssignment("set", setter.nodes[0] as ts.Expression),
+      computedExpression = $t.createObjectLiteralExpression([
+        ["get", getter.nodes[0] as ts.Expression],
+        ["set", setter.nodes[0] as ts.Expression],
       ]);
     } else {
       computedExpression = $t.module.setSyntheticTrailingComments(

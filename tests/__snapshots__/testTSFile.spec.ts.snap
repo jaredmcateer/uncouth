@@ -130,9 +130,6 @@ export default defineComponent({
      * My msg
      */
     const msg = ref('Vetur means \\"Winter\\" in icelandic.'); // foo
-    const onMsgChanged = (val: string, newVal: string) => {
-      console.log(val, newVal);
-    };
     onBeforeUnmount(() => {
       context.emit(\\"tearing down\\");
     });
@@ -164,6 +161,13 @@ export default defineComponent({
         console.log(anotherComponent.value!);
       },
       { deep: true, immediate: true }
+    );
+    watch(
+      msg.value,
+      (val: string, newVal: string) => {
+        console.log(val, newVal);
+      },
+      {}
     );
     onMounted(() => {
       click(\\"oao\\");
@@ -209,13 +213,13 @@ export default defineComponent({
       mySpan,
       myComponent,
       msg,
-      onMsgChanged,
       onBeforeUnmount,
       onUnmounted,
       click,
       refAccess,
       value,
       checked,
+      msg,
       onMounted,
       removeItem,
       hello,
@@ -357,9 +361,6 @@ export default defineComponent({
      * My msg
      */
     const msg = ref('Vetur means \\"Winter\\" in icelandic.'); // foo
-    const onMsgChanged = (val: string, newVal: string) => {
-      console.log(val, newVal);
-    };
     onBeforeUnmount(() => {
       ctx.emit(\\"tearing down\\");
     });
@@ -391,6 +392,13 @@ export default defineComponent({
         console.log(anotherComponent.value!);
       },
       { deep: true, immediate: true }
+    );
+    watch(
+      msg.value,
+      (val: string, newVal: string) => {
+        console.log(val, newVal);
+      },
+      {}
     );
     onMounted(() => {
       click(\\"oao\\");
@@ -436,13 +444,13 @@ export default defineComponent({
       mySpan,
       myComponent,
       msg,
-      onMsgChanged,
       onBeforeUnmount,
       onUnmounted,
       click,
       refAccess,
       value,
       checked,
+      msg,
       onMounted,
       removeItem,
       hello,
@@ -583,9 +591,6 @@ export default defineComponent({
      * My msg
      */
     const msg = ref('Vetur means \\"Winter\\" in icelandic.'); // foo
-    const onMsgChanged = (val: string, newVal: string) => {
-      console.log(val, newVal);
-    };
     onBeforeUnmount(() => {
       context.emit(\\"tearing down\\");
     });
@@ -617,6 +622,13 @@ export default defineComponent({
         console.log(anotherComponent.value!);
       },
       { deep: true, immediate: true }
+    );
+    watch(
+      msg.value,
+      (val: string, newVal: string) => {
+        console.log(val, newVal);
+      },
+      {}
     );
     onMounted(() => {
       click(\\"oao\\");
@@ -662,13 +674,13 @@ export default defineComponent({
       mySpan,
       myComponent,
       msg,
-      onMsgChanged,
       onBeforeUnmount,
       onUnmounted,
       click,
       refAccess,
       value,
       checked,
+      msg,
       onMounted,
       removeItem,
       hello,

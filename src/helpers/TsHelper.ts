@@ -21,9 +21,10 @@ export class TsHelper {
   }
 
   getDecorator(node: ts.Node, decorator: string): ts.Decorator | undefined {
-    if (!node?.decorators) return;
+    if (!ts.canHaveDecorators(node)) return;
 
-    return node.decorators.find(
+    const decorators = ts.getDecorators(node) ?? [];
+    return decorators.find(
       (el) => (el.expression as ts.CallExpression).expression.getText() === decorator
     );
   }
@@ -79,6 +80,46 @@ export class TsHelper {
       name,
       this.factory.createObjectLiteralExpression(properties, true)
     );
+  }
+
+  createBooleanLiteral(value: boolean | string): ts.TrueLiteral | ts.FalseLiteral {
+    const text = typeof value === "boolean" ? value + "" : value;
+    const node =
+      text.toLowerCase() === "true" ? this.factory.createTrue() : this.factory.createFalse();
+    return node;
+  }
+
+  createObjectLiteralExpression(
+    props: [key: string, value: string | boolean | number | RegExp | ts.Expression][]
+  ): ts.ObjectLiteralExpression {
+    const propAssignments = props.reduce((acc, [key, val]) => {
+      let value: ts.Expression;
+      if (typeof val === "object" && "kind" in val) value = val;
+      else value = this.getLiteralFromValue(val);
+
+      const property = this.factory.createPropertyAssignment(key, value);
+      acc.push(property);
+
+      return acc;
+    }, [] as ts.PropertyAssignment[]);
+    return this.factory.createObjectLiteralExpression(propAssignments, true);
+  }
+
+  getLiteralFromValue(
+    value: string | boolean | number | RegExp | bigint
+  ):
+    | ts.StringLiteral
+    | ts.NumericLiteral
+    | ts.TrueLiteral
+    | ts.FalseLiteral
+    | ts.BigIntLiteral
+    | ts.RegularExpressionLiteral {
+    if (typeof value === "string") return this.factory.createStringLiteral(value);
+    if (typeof value === "boolean") return this.createBooleanLiteral(value);
+    if (typeof value === "number") return this.factory.createNumericLiteral(value);
+    if (typeof value === "bigint") return this.factory.createBigIntLiteral(value + "");
+    if (value instanceof RegExp) return this.factory.createRegularExpressionLiteral(value + "");
+    throw new Error("Invalid literal type passed");
   }
 
   createExpressionStatement(expression: ts.Expression): ts.ExpressionStatement;
@@ -141,7 +182,8 @@ export class TsHelper {
     bodyStatements?: ts.Statement[],
     multiline?: boolean
   ): ts.ArrowFunction {
-    const { modifiers, typeParameters, type, body, parameters } = node;
+    const { typeParameters, type, body, parameters } = node;
+    const modifiers = ts.getModifiers(node);
     const rocketToken = this.factory.createToken(this.module.SyntaxKind.EqualsGreaterThanToken);
     const fnBody = bodyStatements
       ? this.factory.createBlock(bodyStatements, multiline)
@@ -171,11 +213,8 @@ export class TsHelper {
   }
 
   removeComments<T extends ts.Node>(node: T): T | ts.StringLiteral {
-    if (this.module.isStringLiteral(node)) {
-      return this.factory.createStringLiteral(node.text);
-    }
-
-    return node;
+    if (!this.module.isStringLiteral(node)) return node;
+    return this.factory.createStringLiteral(node.text);
   }
 
   isPrimitiveType(returnType: ts.Type): boolean {
@@ -201,7 +240,6 @@ export class TsHelper {
       this.factory.createParameterDeclaration(
         undefined,
         undefined,
-        undefined,
         param,
         undefined,
         undefined,
@@ -209,7 +247,6 @@ export class TsHelper {
       )
     );
     return this.factory.createMethodDeclaration(
-      undefined,
       undefined,
       undefined,
       name,

@@ -278,7 +278,6 @@ export function convertASTResultToImport(
 
     return $t.factory.createImportDeclaration(
       undefined,
-      undefined,
       $t.factory.createImportClause(false, name, namedImports),
       $t.factory.createStringLiteral(key)
     );
@@ -308,12 +307,7 @@ export function runPlugins(
   ];
   const dcOptions = $t.factory.createObjectLiteralExpression(dcOptionsProperties, true);
   const dcExpression = $t.createCallExpression(dcIdentifier, undefined, [dcOptions]);
-  const dcExportAssignment = $t.factory.createExportAssignment(
-    undefined,
-    undefined,
-    undefined,
-    dcExpression
-  );
+  const dcExportAssignment = $t.factory.createExportAssignment(undefined, undefined, dcExpression);
 
   const defineComponentExportAssignment = $t.copySyntheticComments(dcExportAssignment, node);
 
