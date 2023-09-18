@@ -16,7 +16,7 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
   $t = new TsHelper(options);
   const decorator = $t.getDecorator(node, propDecoratorName);
   if (!decorator) return false;
-  let type = node.type?.kind;
+  const type = node.type?.kind;
   const decoratorArguments = (decorator.expression as ts.CallExpression).arguments;
   const hasKnowableType =
     type !== undefined &&
@@ -45,10 +45,11 @@ export const convertProp: ASTConverter<ts.PropertyDeclaration> = (node, options)
 
   const args = $t.factory.createObjectLiteralExpression(props.length > 0 ? props : undefined);
   let propAssignment = $t.factory.createPropertyAssignment(propName, args);
+  const unknownType = node.type?.getText() || "Unknown";
   propAssignment = addTodoComplex
     ? $t.addTodoComment(
         propAssignment,
-        `Too complex to determine primitive type: ${node.type!.getText()} `,
+        `Too complex to determine primitive type: ${unknownType} `,
         true
       )
     : propAssignment;

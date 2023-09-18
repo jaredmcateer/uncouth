@@ -82,7 +82,7 @@ export class TsHelper {
     );
   }
 
-  createBooleanLiteral(value: boolean | string) {
+  createBooleanLiteral(value: boolean | string): ts.TrueLiteral | ts.FalseLiteral {
     const text = typeof value === "boolean" ? value + "" : value;
     const node =
       text.toLowerCase() === "true" ? this.factory.createTrue() : this.factory.createFalse();
@@ -91,7 +91,7 @@ export class TsHelper {
 
   createObjectLiteralExpression(
     props: [key: string, value: string | boolean | number | ts.Expression][]
-  ) {
+  ): ts.ObjectLiteralExpression {
     const propAssignments = props.reduce((acc, [key, val]) => {
       let value;
       switch (typeof val) {
@@ -116,7 +116,15 @@ export class TsHelper {
     return this.factory.createObjectLiteralExpression(propAssignments, true);
   }
 
-  getLiteralFromValue(value: string | boolean | number | RegExp | bigint) {
+  getLiteralFromValue(
+    value: string | boolean | number | RegExp | bigint
+  ):
+    | ts.StringLiteral
+    | ts.NumericLiteral
+    | ts.TrueLiteral
+    | ts.FalseLiteral
+    | ts.BigIntLiteral
+    | ts.RegularExpressionLiteral {
     if (typeof value === "string") return this.factory.createStringLiteral(value);
     if (typeof value === "boolean") return this.createBooleanLiteral(value);
     if (typeof value === "number") return this.factory.createNumericLiteral(value);
