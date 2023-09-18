@@ -26,7 +26,7 @@ export const convertWatch: ASTConverter<ts.MethodDeclaration> = (node, options) 
   }
 
   const thisPropertyAccess = $t.createPropertyAccess(
-    $t.factory.createThis(),
+    $t.createThis(),
     $t.factory.createIdentifier(keyName)
   );
   const watchArgs = $t.factory.createObjectLiteralExpression(watchOptions);

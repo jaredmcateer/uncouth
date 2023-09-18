@@ -90,24 +90,13 @@ export class TsHelper {
   }
 
   createObjectLiteralExpression(
-    props: [key: string, value: string | boolean | number | ts.Expression][]
+    props: [key: string, value: string | boolean | number | RegExp | ts.Expression][]
   ): ts.ObjectLiteralExpression {
     const propAssignments = props.reduce((acc, [key, val]) => {
-      let value;
-      switch (typeof val) {
-        case "string":
-          value = this.factory.createStringLiteral(val);
-          break;
-        case "number":
-          value = this.factory.createNumericLiteral(val);
-          break;
-        case "boolean":
-          value = this.createBooleanLiteral(val);
-          break;
-        default:
-          value = val;
-          break;
-      }
+      let value: ts.Expression;
+      if (typeof val === "object" && "kind" in val) value = val;
+      else value = this.getLiteralFromValue(val);
+
       const property = this.factory.createPropertyAssignment(key, value);
       acc.push(property);
 
@@ -224,11 +213,8 @@ export class TsHelper {
   }
 
   removeComments<T extends ts.Node>(node: T): T | ts.StringLiteral {
-    if (this.module.isStringLiteral(node)) {
-      return this.factory.createStringLiteral(node.text);
-    }
-
-    return node;
+    if (!this.module.isStringLiteral(node)) return node;
+    return this.factory.createStringLiteral(node.text);
   }
 
   isPrimitiveType(returnType: ts.Type): boolean {
